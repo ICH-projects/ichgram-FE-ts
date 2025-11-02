@@ -1,0 +1,63 @@
+{
+  "usesTypeScript": true,
+  "usesStyledComponents": true,
+  "testLibrary": "None",
+  "component": {
+    "default": {
+      "customTemplates": {
+        "component": "./generate-react-cli/component/TemplateName.tsx",
+        "style": "./generate-react-cli/component/TemplateName.module.css"
+      },
+      "path": "src/shared/components",
+      "withStyle": true,
+      "withTest": false,
+      "withStory": false,
+      "withLazy": false
+    },
+    "module": {
+      "customTemplates": {
+        "component": "./generate-react-cli/module/TemplateName.tsx",
+        "style": "./generate-react-cli/module/TemplateName.module.css"
+      },
+      "path": "src/modules",
+      "withStyle": true,
+      "withTest": false,
+      "withStory": false,
+      "withLazy": false
+    },
+    "page": {
+      "customTemplates": {
+        "component": "./generate-react-cli/page/TemplateName.tsx",
+        "style": "./generate-react-cli/page/TemplateName.module.css"
+      },
+      "path": "src/pages",
+      "withStyle": true,
+      "withTest": false,
+      "withStory": false,
+      "withLazy": false
+    },
+    "nav": {
+      "customTemplates": {
+        "component": "./generate-react-cli/navigation/TemplateName.tsx"
+      },
+      "path": "src/pages",
+      "withStyle": false,
+      "withTest": false,
+      "withStory": false,
+      "withLazy": false,
+      "flat": true
+    },
+    "icon": {
+      "customTemplates": {
+        "component": "./generate-react-cli/icon/TemplateName.tsx"
+      },
+      "path": "src/shared/components/icons",
+      "withStyle": true,
+      "withTest": false,
+      "withStory": false,
+      "withLazy": false,
+      "flat": true
+    }
+  }
+}
+
