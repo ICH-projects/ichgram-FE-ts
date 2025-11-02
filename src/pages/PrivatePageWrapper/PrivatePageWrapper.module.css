@@ -1,1 +1,23 @@
-.privatePageWrapper {}
+.privatePageWrapper {
+  height: 100vh;
+  display: grid;
+  /* gap: 0; */
+  /* border: 0; */
+  grid-template-rows: 1fr auto;
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    "navbar content "
+    "footer footer ";
+}
+
+.navbar {
+  grid-area: navbar;
+}
+
+.content {
+  grid-area: content;
+}
+
+.footer {
+  grid-area: footer;
+}
