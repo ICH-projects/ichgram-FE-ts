@@ -1,0 +1,13 @@
+.confirmPage {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 1rem;
+}
+
+.info {
+   line-height: 2rem;
+}

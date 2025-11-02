@@ -1,15 +1,14 @@
 import instance from "./instance";
 import { fetchDecorator } from "../utils/fetchDecorator";
-import type { User } from "../../typescript/types";
 
-export const findUsersApi = fetchDecorator((payload: User) => {
+export const findUsersApi = fetchDecorator((payload) => {
   return instance.get("users/search", { params: { ...payload } });
 });
 
-export const getUserByIdApi = fetchDecorator((payload: number) => {
+export const getUserByIdApi = fetchDecorator((payload) => {
   return instance.get(`users/${payload}`);
 });
 
-export const updateUserApi = fetchDecorator((payload: User) => {
+export const updateUserApi = fetchDecorator((payload) => {
   return instance.putForm("users", { ...payload });
 });

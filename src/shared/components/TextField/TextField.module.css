@@ -1,0 +1,31 @@
+.textField {
+}
+
+.input {
+  padding: 1rem 2rem;
+  font-size: 1.25rem;
+  font-weight: 500;
+  border-radius: var(--radius-small);
+  outline: none;
+  background-color: var(--color-background-input-secondary);
+}
+.input::selection {
+  background-color: var(--color-input-selection);
+}
+
+.filled {
+  background-color: var(--color-background-contained);
+  border: solid 1px var(--color-border);
+  color: #fff;
+}
+
+.outlined {
+  background-color: #fff;
+  border: solid 1px var(--color-border);
+  color: var(--color-text-primary);
+}
+
+.error {
+  /* height: 1.25rem; */
+  color: var(--color-text-error);
+}

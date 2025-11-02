@@ -3,12 +3,9 @@ import type { JSX } from "react";
 import styles from "./Container.module.css";
 
 export default function Container({
-  className = "",
-  variant = "",
+  children = "",
 }: {
-  className: string;
-  variant: string;
+  children?: (JSX.Element | string)[] | string;
 }): JSX.Element {
-  const fullClassName: string = `${styles.container} ${className} ${styles[variant]}`;
-  return <div className={fullClassName}>Container</div>;
+  return <div className={styles.container}>{children}</div>;
 }

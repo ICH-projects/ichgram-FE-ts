@@ -16,3 +16,6 @@ export type AuthStore = {
   user: User | null;
 };
 
+export type Store = {
+  auth: AuthStore;
+};

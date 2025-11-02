@@ -1,0 +1,31 @@
+.notFoundPage {
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+.wrapper {
+  display: flex;
+  gap: 4rem;
+}
+.info {
+  padding-block: 4rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+.text {
+  line-height: 1.25;
+  color: var(--color-text-secondary);
+}
+
+.link {
+  padding-top: 1.5rem;
+  text-align: center;
+}

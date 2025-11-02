@@ -1,13 +1,13 @@
-import type { IAuthStore } from "../../redux/auth/auth-slice.ts";
+import type { AuthStore } from "../../typescript/types";
 
-export const pending = (store: IAuthStore) => {
+export const pending = (store: AuthStore) => {
   store.loading = true;
   store.error = null;
   store.message = null;
 };
 
 export const rejected = (
-  store: IAuthStore,
+  store: AuthStore,
   { payload }: { payload: unknown }
 ) => {
   store.loading = false;

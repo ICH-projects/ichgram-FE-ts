@@ -1,8 +1,8 @@
-export const selectAuth = store => store.auth;
+import type { Store, AuthStore, User } from "../../typescript/types";
 
-export const selectIsLogin = store => Boolean(store.auth.user);
+export const selectAuth = (store: Store): AuthStore => store.auth;
 
-export const selectUser = store => store.auth.user;
+export const selectIsLogin = (store: Store): boolean =>
+  Boolean(store.auth.user);
 
-export const selectToken = store => store.auth.token;
-
+export const selectUser = (store: Store): User | null => store.auth.user;
