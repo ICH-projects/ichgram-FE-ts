@@ -1,0 +1,12 @@
+.posts {
+  position: relative;
+  padding: 4rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  /* grid-template-rows: repeat(2, 1fr); */
+  gap: 1.5rem 2.5rem;
+}
+
+.message{
+  margin: 0 auto;
+}

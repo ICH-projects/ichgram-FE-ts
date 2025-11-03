@@ -9,7 +9,6 @@ export default function PublicPageWrapper(): JSX.Element {
   return (
     <div className={styles.publicPageWrapper}>
       <Container>
-        PublicPageWrapper
         <Outlet />
       </Container>
     </div>

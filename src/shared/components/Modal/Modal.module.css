@@ -1,0 +1,9 @@
+.modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  background-color: var(--color-background-modal);
+  z-index: 100;
+}

@@ -1,0 +1,13 @@
+// export { default as ClosedIcon } from "./ClosedIcon";
+export { default as CommentIcon } from "./CommentIcon";
+// export { default as CreateIcon } from "./CreateIcon";
+// export { default as ExploreIcon } from "./ExploreIcon";
+// export { default as HomeIcon } from "./HomeIcon";
+export { default as LikeIcon } from "./LikeIcon";
+// export { default as MessagesIcon } from "./MessagesIcon";
+// export { default as SaveIcon } from "./SaveIcon";
+// export { default as SearchIcon } from "./SearchIcon";
+// export { default as SmileIcon } from "./SmileIcon";
+// export { default as TelegramIcon } from "./TelegramIcon";
+export { default as EndIcon } from "./EndIcon";
+// export { default as AdditionalIcon } from "./AdditionalIcon";
