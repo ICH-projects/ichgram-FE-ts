@@ -1,6 +1,4 @@
-import type { AxiosResponse } from "axios";
-
-
+import type { AxiosResponse, AxiosError } from "axios";
 
 export const fetchDecorator = (
   request: <T>(payload: T) => Promise<AxiosResponse>
@@ -10,7 +8,7 @@ export const fetchDecorator = (
       const { data } = await request(payload);
       return { data, error: null };
     } catch (error) {
-      return { data: null, error: error };
+      return { data: null, error: error as AxiosError<{ message: string }> };
     }
   };
 };

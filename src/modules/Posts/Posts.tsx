@@ -18,11 +18,15 @@ import type {
   Post,
   ResponseData,
 } from "../../typescript/types";
+import type { AxiosError } from "axios";
 
 export default function Posts({ posts = [] }: { posts: Post[] | undefined }) {
   const [render, setRender] = useState(true);
   const [message, setMessage] = useState<string | null | undefined>(null);
-  const { loading, error, sendRequest } = useRequest<ResponseData<unknown>>();
+  const { loading, error, sendRequest } = useRequest<
+    ResponseData<unknown>,
+    AxiosError<{ message: string }>
+  >();
 
   const showPost = (postId: number) => {
     // dispatch(showModal({ type: "Post", id: postId }));
@@ -59,7 +63,7 @@ export default function Posts({ posts = [] }: { posts: Post[] | undefined }) {
       followUserApi({ targetUserId })
     );
     const createdFollow = responseData?.payload as Follow;
-    setMessage(responseData?.message)
+    setMessage(responseData?.message);
     setRender((prev) => !prev);
     posts.map((post) => {
       if (post.user.id === createdFollow.targetUserId)
@@ -84,7 +88,7 @@ export default function Posts({ posts = [] }: { posts: Post[] | undefined }) {
       <div className={styles.posts}>{elements}</div>
       <LoadingErrorOutput
         loading={loading}
-        error={error}
+        error={error?.response?.data.message || error?.message}
         message={message}
         render={render}
         className={styles.message}

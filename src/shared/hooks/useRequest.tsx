@@ -1,25 +1,23 @@
-import { AxiosError } from "axios";
 import { useState } from "react";
 
 import type { FetchResponse } from "../../typescript/types";
 
-function useRequest<T>() {
+function useRequest<T, E>() {
   const [state, setState] = useState<T | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<E | null>(null);
 
-  const sendRequest = async (request: () => Promise<FetchResponse<T>>) => {
+  const sendRequest = async (
+    request: () => Promise<FetchResponse<T, E >>
+  ) => {
     setLoading(true);
     setError(null);
     const { data, error } = await request();
     setLoading(false);
     if (error) {
-      return setError(
-        (error as AxiosError<{ message: string }>).response?.data?.message ||
-          (error as AxiosError).message
-      );
+      return setError(error);
     }
-    setState(data)
+    setState(data);
     return data;
   };
 

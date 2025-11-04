@@ -21,14 +21,14 @@ export type Store = {
   auth: AuthStore;
 };
 
-export type FetchResponse<T> =
+export type FetchResponse<T, E> =
   | {
       data: T;
       error: null;
     }
   | {
       data: null;
-      error: unknown;
+      error: E;
     };
 
 export type ResponseData<T> = {
