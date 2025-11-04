@@ -2,8 +2,9 @@ import type { AxiosError } from "axios";
 import type { ResponseData } from "../../typescript/types";
 
 export const fetchDecorator = <
-  R extends { data: ResponseData<unknown> } = { data: ResponseData<unknown> },
-  E  = AxiosError<{ message: string }>
+  T = unknown,
+  R extends { data: ResponseData<T> } = { data: ResponseData<T> },
+  E = AxiosError<{ message: string }>
 >(
   request: <T>(payload: T) => Promise<R>
 ) => {

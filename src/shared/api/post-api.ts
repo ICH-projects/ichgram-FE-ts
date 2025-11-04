@@ -1,11 +1,12 @@
 import instance from "./instance";
 import { fetchDecorator } from "../../shared/utils/fetchDecorator";
+import type { Post } from "../../typescript/types";
 
 export const createPostApi = fetchDecorator((payload) => {
   return instance.postForm("posts", { ...payload });
 });
 
-export const getLastUpdatedPostsApi = fetchDecorator(() => {
+export const getLastUpdatedPostsApi = fetchDecorator<Post[]>(() => {
   return instance.get("posts/updates");
 });
 

@@ -8,7 +8,7 @@ function useRequest<T, E>() {
   const [error, setError] = useState<E | null>(null);
 
   const sendRequest = async (
-    request: () => Promise<FetchResponse<T, E >>
+    request: (payload?: unknown) => Promise<FetchResponse<T, E >>
   ) => {
     setLoading(true);
     setError(null);
