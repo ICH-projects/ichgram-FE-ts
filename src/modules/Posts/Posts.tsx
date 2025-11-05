@@ -1,14 +1,16 @@
 import { useState } from "react";
-
-import LoadingErrorOutput from "../../shared/components/LoadingErrorOutput/LoadingErrorOutput";
+import type { AxiosError } from "axios";
 
 import useRequest from "../../shared/hooks/useRequest";
-
 import { createCommentApi } from "../../shared/api/comment-api";
 import { likePostApi } from "../../shared/api/like-api";
 import { followUserApi } from "../../shared/api/follow-api";
 
+import LoadingErrorOutput from "../../shared/components/LoadingErrorOutput/LoadingErrorOutput";
+import Modal from "../../shared/components/Modal/Modal";
+
 import PostCard from "./PostCard/PostCard";
+import PostDetail from "./PostDetail/PostDetail";
 
 import styles from "./Posts.module.css";
 import type {
@@ -18,18 +20,25 @@ import type {
   Post,
   ResponseData,
 } from "../../typescript/types";
-import type { AxiosError } from "axios";
 
 export default function Posts({ posts = [] }: { posts: Post[] | undefined }) {
   const [render, setRender] = useState(true);
   const [message, setMessage] = useState<string | null | undefined>(null);
+  const [modalHidden, setModalHidden] = useState(true);
+  const [postId, setPostId] = useState<number | null>(null);
+
   const { loading, error, sendRequest } = useRequest<
     ResponseData<unknown>,
     AxiosError<{ message: string }>
   >();
 
   const showPost = (postId: number) => {
-    // dispatch(showModal({ type: "Post", id: postId }));
+    setModalHidden(false);
+    setPostId(postId);
+  };
+  const closePost = () => {
+    setModalHidden(true);
+    setPostId(null);
   };
 
   const sendComment = async (comment: Comment) => {
@@ -93,6 +102,9 @@ export default function Posts({ posts = [] }: { posts: Post[] | undefined }) {
         render={render}
         className={styles.message}
       />
+      <Modal hidden={modalHidden} onClickHandle={closePost}>
+        <PostDetail postId={postId} close={closePost} />
+      </Modal>
     </>
   );
 }

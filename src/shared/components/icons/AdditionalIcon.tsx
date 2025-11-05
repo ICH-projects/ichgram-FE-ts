@@ -1,4 +1,4 @@
-export default function AdditionalIcon({ className }) {
+export default function AdditionalIcon({ className = "" }) {
   return (
     <svg
       width="22"
