@@ -37,7 +37,7 @@ export type ResponseData<T> = {
 };
 
 export type Comment = {
-  id: number;
+  id?: number;
   userId: number;
   postId: number;
   text: string;
@@ -52,7 +52,7 @@ export type Like = {
 };
 
 export type Post = {
-  id: number;
+  id?: number;
   userId: number;
   image: string;
   updatedAt: Date;

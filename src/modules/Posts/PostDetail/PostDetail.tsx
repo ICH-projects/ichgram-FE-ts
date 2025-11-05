@@ -1,11 +1,20 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import {
+  useForm,
+  type SubmitHandler,
+  type UseFormRegister,
+} from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import type { AxiosError } from "axios";
 
-import type { Follow, Post, ResponseData } from "../../../typescript/types";
+import type {
+  Comment,
+  Follow,
+  Post,
+  ResponseData,
+} from "../../../typescript/types";
 
 import { selectUser } from "../../../redux/auth/auth-selectors";
 
@@ -30,7 +39,7 @@ import {
 
 import CommentCard from "./CommentCard/CommentCard";
 
-import { fields, commentSchema } from "./fields";
+import { fields, defaultValues, commentSchema } from "./fields";
 
 import styles from "./PostDetail.module.css";
 
@@ -42,53 +51,51 @@ interface IPostDetailProps {
 }
 
 export default function PostDetail({ postId }: IPostDetailProps) {
+  const [post, setPost] = useState<Post | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
+
   const { register, handleSubmit } = useForm({
+    defaultValues,
     resolver: yupResolver(commentSchema),
     mode: "onChange",
   });
 
-  const { state, loading, error, sendRequest } = useRequest<
-    ResponseData<Post>,
+  const { loading, error, sendRequest } = useRequest<
+    ResponseData<unknown>,
     AxiosError<{ message: string }>
   >();
-  const { message, payload: post } = state
-    ? state
-    : { message: null, payload: null };
   const [render, setRender] = useState(true);
 
   useEffect(() => {
-    if (postId) {
-      sendRequest(() => getPostByIdApi(postId));
-    }
+    const fetchData = async (postId: number) => {
+      const responseData = await sendRequest(() => getPostByIdApi(postId));
+      setPost(responseData?.payload as Post);
+      setMessage(responseData?.message as string);
+    };
+
+    if (postId) fetchData(postId);
   }, [postId]);
 
   const currentUser = useSelector(selectUser);
-  const isPostUserFollowed = state?.payload?.user?.followers
-    ? state?.payload?.user?.followers.some(
+  const isPostUserFollowed = post?.user?.followers
+    ? post.user?.followers.some(
         (follow: Follow) => follow.followerUserId === currentUser!.id
       )
     : false;
   const [dialogShow, setDialogShow] = useState(false);
   const [reset, setReset] = useState(false);
 
-  const sendComment = async (comment) => {
-    // const { comment: createdComment } = await sendRequest(() =>
-    //   createCommentApi({
-    //     postId: post.id,
-    //     text: comment.comment,
-    //   })
-    // );
-    // setRender((prev) => !prev);
-    // if (post) {
-    //   setPost((prev) => {
-    //     if (!post?.totalComments) post.totalComments = 0;
-    //     post.totalComments += 1;
-    //     if (!post.comments) post.comments = [];
-    //     post.comments.unshift(createdComment);
-    //     return { ...prev };
-    //   });
-    //   setReset((prev) => !prev);
-    // }
+  const handleSendComment = async (comment: Comment): Promise<void> => {
+    const responseData = await sendRequest(() => createCommentApi(comment));
+    setMessage(responseData?.message as string);
+    setPost((prev) => {
+      if (!prev?.totalComments) prev!.totalComments = 0;
+      prev!.totalComments += 1;
+      if (!prev?.comments) prev!.comments = [];
+      prev!.comments.unshift( responseData?.payload as Comment);
+      return prev;
+    });
+    setReset((prev) => !prev);
   };
 
   const likePost = async (postId) => {
@@ -123,7 +130,7 @@ export default function PostDetail({ postId }: IPostDetailProps) {
     // navigate("/");
   };
 
-  const commentElements = state?.payload.comments?.map((comment) => {
+  const commentElements = post?.comments?.map((comment) => {
     return <CommentCard key={comment.id} comment={comment} />;
   });
 
@@ -184,7 +191,6 @@ export default function PostDetail({ postId }: IPostDetailProps) {
               className={`${styles.icon} ${post?.isLiked && styles.filled}`}
             />
           </button>
-
           <CommentIcon className={styles.icon} />
         </div>
         <div className={styles.statsWrapper}>
@@ -196,10 +202,12 @@ export default function PostDetail({ postId }: IPostDetailProps) {
           } comments`}</span>
         </div>
         <form
-          onSubmit={handleSubmit(sendComment)}
+          onSubmit={handleSubmit((data) =>
+            handleSendComment({ ...data, postId: post!.id } as Comment)
+          )}
           className={styles.inputWrapper}
         >
-          <TextEditor register={register} {...fields.comment} reset={reset} />
+          <TextEditor register={register} {...fields.text} reset={reset} />
           <button type="submit" className={styles.btn}>
             Send
           </button>

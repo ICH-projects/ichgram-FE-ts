@@ -1,12 +1,12 @@
 import * as yup from "yup";
 
 export const defaultValues = {
-  comment: "",
+  text: "",
 };
 
 export const fields = {
-  comment: {
-    name: "comment",
+  text: {
+    name: "text",
     type: "text",
     placeholder: "Input comment text there...",
   }

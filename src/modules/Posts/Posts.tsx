@@ -41,7 +41,7 @@ export default function Posts({ posts = [] }: { posts: Post[] | undefined }) {
     setPostId(null);
   };
 
-  const sendComment = async (comment: Comment) => {
+  const handleSendComment = async (comment: Comment) => {
     const responseData = await sendRequest(() => createCommentApi(comment));
     const createdComment = responseData?.payload as Comment;
     setMessage(responseData?.message);
@@ -85,7 +85,7 @@ export default function Posts({ posts = [] }: { posts: Post[] | undefined }) {
     <PostCard
       key={post.id}
       post={post}
-      sendComment={sendComment}
+      sendComment={handleSendComment}
       likePost={likePost}
       followUser={followUser}
       showPost={showPost}
