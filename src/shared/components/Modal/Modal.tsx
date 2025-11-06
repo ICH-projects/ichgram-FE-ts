@@ -1,4 +1,4 @@
-import type { JSX } from "react";
+import type {  ReactNode } from "react";
 import styles from "./Modal.module.css";
 
 interface IModalProps {
@@ -6,7 +6,8 @@ interface IModalProps {
   variant?: string;
   hidden?: boolean;
   onClickHandle?: () => void;
-  children?: (JSX.Element | string)[] | JSX.Element | string | undefined;
+  // children?: (JSX.Element | string)[] | JSX.Element | string;
+  children?: ReactNode;
 }
 
 export default function Modal({

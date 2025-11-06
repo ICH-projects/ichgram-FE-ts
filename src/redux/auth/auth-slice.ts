@@ -6,6 +6,7 @@ import {
   // registerUser,
   getCurrentUser,
   loginUser,
+  logoutUser,
   // logoutUser,
   // resetPassword,
   // updatePassword,
@@ -56,7 +57,15 @@ const authSlice = createSlice({
         store.user = payload.user;
         store.message = payload.message;
       })
-      .addCase(loginUser.rejected, rejected);
+      .addCase(loginUser.rejected, rejected)
+
+      .addCase(logoutUser.pending, pending)
+      .addCase(logoutUser.fulfilled, (store) => {
+        store.loading = false;
+        store.user = null;
+        store.message = null;
+      })
+      .addCase(logoutUser.rejected, rejected);
   },
   reducers: {},
 });

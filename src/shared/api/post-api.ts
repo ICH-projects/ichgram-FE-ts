@@ -2,7 +2,7 @@ import instance from "./instance";
 import { fetchDecorator } from "../../shared/utils/fetchDecorator";
 import type { Post } from "../../typescript/types";
 
-export const createPostApi = fetchDecorator((payload) => {
+export const createPostApi = fetchDecorator<Post>((payload) => {
   return instance.postForm("posts", { ...payload });
 });
 

@@ -1,0 +1,58 @@
+.createPost {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.form {
+  width: 90%;
+  aspect-ratio: 4/4;
+  border-radius: 0.75rem;
+  background-color: #fff;
+
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+    "header header"
+    "fileUpload textEditor"
+    "message textEditor";
+}
+
+.header {
+  grid-area: header;
+  padding: 1rem;
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+}
+.title {
+  flex: 1 1 auto;
+  text-align: center;
+  font-weight: 600;
+}
+.submit {
+  flex: 0 0 auto;
+  border: none;
+  color: var(--color-link-primary);
+  background-color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+}
+.uploadWrapper {
+  grid-area: fileUpload;
+  border-right: 1px solid var(--color-border);
+  padding: 1.5rem;
+}
+
+.textEditorWrapper {
+  grid-area: textEditor;
+  border-bottom: 1px solid var(--color-border);
+}
+.messageWrapper {
+  grid-area: message;
+  padding: 1rem;
+}

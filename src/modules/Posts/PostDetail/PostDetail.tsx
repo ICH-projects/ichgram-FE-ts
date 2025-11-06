@@ -114,7 +114,6 @@ export default function PostDetail({
 
   const handleDeletePost = async (id: number) => {
     if (post?.user?.id !== currentUser!.id) return;
-    // dispatch(hideModal());
     const result: boolean = await deletePost(id);
     if (!result) return;
     alert("Post successfully deleted");
