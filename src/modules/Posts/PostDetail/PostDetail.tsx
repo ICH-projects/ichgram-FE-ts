@@ -1,34 +1,20 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import {
-  useForm,
-  type SubmitHandler,
-  type UseFormRegister,
-} from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import type { AxiosError } from "axios";
 
-import type {
-  Comment,
-  Follow,
-  Post,
-  ResponseData,
-} from "../../../typescript/types";
+import type { Comment, Follow, Like, Post } from "../../../typescript/types";
 
 import { selectUser } from "../../../redux/auth/auth-selectors";
 
-// import { hideModal } from "/src/redux/modal/modal-slice";
+import { isUserFollowed } from "../../../shared/utils/user";
 
 import useRequest from "../../../shared/hooks/useRequest";
 import { getPostByIdApi } from "../../../shared/api/post-api";
-import { createCommentApi } from "../../../shared/api/comment-api";
-import { likePostApi } from "../../../shared/api/like-api";
-import { followUserApi } from "../../../shared/api/follow-api";
-import { deletePostByIdApi } from "../../../shared/api/post-api";
 
 import TextEditor from "../../../shared/components/TextEditor/TextEditor";
-import LoadingErrorOutput from "../../../shared/components/LoadingErrorOutput/LoadingErrorOutput";
+import Info from "../../../shared/components/Info/Info";
 import Dialog from "../../../shared/components/Dialog/Dialog";
 
 import {
@@ -48,11 +34,23 @@ const { VITE_API_URL: baseURL } = import.meta.env;
 interface IPostDetailProps {
   postId: number | null;
   close: () => void;
+  message?: string | null;
+  likePost: (like: Like) => Promise<Like>;
+  sendComment: (comment: Comment) => Promise<Comment>;
+  followUser: (follow: Follow) => Promise<Follow>;
+  deletePost: (id: number) => Promise<boolean>;
 }
 
-export default function PostDetail({ postId }: IPostDetailProps) {
+export default function PostDetail({
+  postId,
+  close,
+  message,
+  sendComment,
+  likePost,
+  followUser,
+  deletePost,
+}: IPostDetailProps) {
   const [post, setPost] = useState<Post | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
 
   const { register, handleSubmit } = useForm({
     defaultValues,
@@ -60,74 +58,67 @@ export default function PostDetail({ postId }: IPostDetailProps) {
     mode: "onChange",
   });
 
-  const { loading, error, sendRequest } = useRequest<
-    ResponseData<unknown>,
-    AxiosError<{ message: string }>
-  >();
+  const { loading, error, sendRequest } = useRequest<Post>();
   const [render, setRender] = useState(true);
 
   useEffect(() => {
     const fetchData = async (postId: number) => {
-      const responseData = await sendRequest(() => getPostByIdApi(postId));
-      setPost(responseData?.payload as Post);
-      setMessage(responseData?.message as string);
+      const post: Post | void = await sendRequest(() => getPostByIdApi(postId));
+      setPost(post as Post);
     };
 
     if (postId) fetchData(postId);
   }, [postId]);
 
   const currentUser = useSelector(selectUser);
-  const isPostUserFollowed = post?.user?.followers
-    ? post.user?.followers.some(
-        (follow: Follow) => follow.followerUserId === currentUser!.id
-      )
-    : false;
   const [dialogShow, setDialogShow] = useState(false);
   const [reset, setReset] = useState(false);
 
   const handleSendComment = async (comment: Comment): Promise<void> => {
-    const responseData = await sendRequest(() => createCommentApi(comment));
-    setMessage(responseData?.message as string);
+    const createdComment = await sendComment(comment);
+    if (!createdComment) return;
     setPost((prev) => {
-      if (!prev?.totalComments) prev!.totalComments = 0;
-      prev!.totalComments += 1;
+      prev!.totalComments = (prev!.totalComments || 0) + 1;
       if (!prev?.comments) prev!.comments = [];
-      prev!.comments.unshift( responseData?.payload as Comment);
+      prev!.comments.unshift(createdComment as Comment);
       return prev;
     });
     setReset((prev) => !prev);
+    setRender((prev) => !prev);
   };
 
-  const likePost = async (postId) => {
-    // if (post.isLiked) return;
-    // await sendRequest(() => likePostApi({ postId }));
-    // setRender((prev) => !prev);
-    // if (post) {
-    //   setPost((prev) => {
-    //     if (!post?.totalLikes) post.totalLikes = 0;
-    //     post.totalLikes = Number(post.totalLikes) + 1;
-    //     post.isLiked = true;
-    //     return { ...prev };
-    //   });
-    // }
+  const handleLikePost = async (like: Like) => {
+    if (post!.isLiked) return;
+    const createdLike = await likePost(like);
+    if (!createdLike) return;
+    setPost((prev) => {
+      prev!.totalLikes = (prev!.totalLikes || 0) + 1;
+      prev!.isLiked = true;
+      return prev;
+    });
+    setRender((prev) => !prev);
   };
 
-  const followUser = async (targetUserId) => {
-    // const { follow } = await sendRequest(() => followUserApi({ targetUserId }));
-    // setRender((prev) => !prev);
-    // setPost((prev) => {
-    //   if (post.user.id === follow.targetUserId)
-    //     post.user.followers.push(follow);
-    //   return { ...prev };
-    // });
+  const handleFollowUser = async (follow: Follow) => {
+    if (isUserFollowed(post?.user, currentUser)) return;
+    const createdFollow = await followUser(follow);
+    setPost((prev) => {
+      if (prev!.user.id === follow.targetUserId) {
+        if (!prev!.user.followers) prev!.user.followers = [];
+        prev!.user.followers.push(createdFollow);
+      }
+      return prev;
+    });
+    setRender((prev) => !prev);
   };
 
-  const deletePost = async () => {
-    if (post?.user?.id !== currentUser.id) return;
+  const handleDeletePost = async (id: number) => {
+    if (post?.user?.id !== currentUser!.id) return;
     // dispatch(hideModal());
-    const data = await sendRequest(() => deletePostByIdApi(postId));
-    alert(data.message);
-    // navigate("/");
+    const result: boolean = await deletePost(id);
+    if (!result) return;
+    alert("Post successfully deleted");
+    close();
   };
 
   const commentElements = post?.comments?.map((comment) => {
@@ -165,17 +156,22 @@ export default function PostDetail({ postId }: IPostDetailProps) {
               {post?.user?.username}
             </Link>
 
-            {!isPostUserFollowed && post?.user?.id !== currentUser!.id && (
-              <>
-                <span className={styles.username}>&bull;</span>
-                <button
-                  className={styles.btn}
-                  onClick={() => followUser(post?.user?.id)}
-                >
-                  Subscribe
-                </button>
-              </>
-            )}
+            {!isUserFollowed(post?.user, currentUser) &&
+              post?.user?.id !== currentUser!.id && (
+                <>
+                  <span className={styles.username}>&bull;</span>
+                  <button
+                    className={styles.btn}
+                    onClick={() =>
+                      handleFollowUser({
+                        targetUserId: post?.user?.id,
+                      } as Follow)
+                    }
+                  >
+                    Subscribe
+                  </button>
+                </>
+              )}
           </div>
           <button
             className={styles.additionalBtn}
@@ -186,7 +182,10 @@ export default function PostDetail({ postId }: IPostDetailProps) {
         </div>
         <div className={styles.comments}>{commentElements}</div>
         <div className={styles.icons}>
-          <button className={styles.iconBtn} onClick={() => likePost(post?.id)}>
+          <button
+            className={styles.iconBtn}
+            onClick={() => handleLikePost({ postId: post!.id } as Like)}
+          >
             <LikeIcon
               className={`${styles.icon} ${post?.isLiked && styles.filled}`}
             />
@@ -196,10 +195,10 @@ export default function PostDetail({ postId }: IPostDetailProps) {
         <div className={styles.statsWrapper}>
           <span className={styles.stats}>{`${
             post?.totalLikes ? post?.totalLikes : 0
-          } likes`}</span>
+          } ${post?.totalLikes == 1 ? "like" : "likes"}`}</span>
           <span className={styles.stats}>{`${
             post?.totalComments ? post?.totalComments : 0
-          } comments`}</span>
+          } ${post?.totalComments == 1 ? "comment" : "comments"}`}</span>
         </div>
         <form
           onSubmit={handleSubmit((data) =>
@@ -212,7 +211,7 @@ export default function PostDetail({ postId }: IPostDetailProps) {
             Send
           </button>
         </form>
-        <LoadingErrorOutput
+        <Info
           error={error?.response?.data.message || error?.message}
           loading={loading}
           message={message}
@@ -222,7 +221,7 @@ export default function PostDetail({ postId }: IPostDetailProps) {
       {dialogShow && (
         <Dialog
           setDialogShow={setDialogShow}
-          deletePost={deletePost}
+          deletePost={() => handleDeletePost(postId!)}
           closePost={close}
         />
       )}

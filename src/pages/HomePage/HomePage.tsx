@@ -1,22 +1,18 @@
 import { useEffect } from "react";
-import type { AxiosError } from "axios";
 
-import type { Post, ResponseData } from "../../typescript/types";
+import type { Post } from "../../typescript/types";
 
 import useRequest from "../../shared/hooks/useRequest";
 import { getLastUpdatedPostsApi } from "../../shared/api/post-api";
 
 import Posts from "../../modules/Posts/Posts";
-import LoadingErrorOutput from "../../shared/components/LoadingErrorOutput/LoadingErrorOutput";
+import Info from "../../shared/components/Info/Info";
 import { EndIcon } from "../../shared/components/icons";
 
 import styles from "./HomePage.module.css";
 
 export default function HomePage() {
-  const { state, loading, error, sendRequest } = useRequest<
-    ResponseData<Post[]>,
-    AxiosError<{ message: string }>
-  >();
+  const { state, loading, error, sendRequest } = useRequest<Post[]>();
 
   useEffect(() => {
     sendRequest(getLastUpdatedPostsApi);
@@ -24,12 +20,11 @@ export default function HomePage() {
 
   return (
     <div className={styles.homePage}>
-      <LoadingErrorOutput
+      <Info
         loading={loading}
         error={error?.response?.data.message || error?.message}
-        message={state?.message}
       />
-      <Posts posts={state?.payload} />
+      {state && <Posts posts={state} />}
       <div className={styles.end}>
         <EndIcon className={styles.endIcon} />
         <h1 className={styles.endTitle}>You've seen all the updates</h1>

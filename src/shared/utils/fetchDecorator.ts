@@ -1,14 +1,12 @@
 import type { AxiosError } from "axios";
-import type { ResponseData } from "../../typescript/types";
 
 export const fetchDecorator = <
-  T = unknown,
-  R extends { data: ResponseData<T> } = { data: ResponseData<T> },
-  E = AxiosError<{ message: string }>
+  D = unknown,
+  E extends AxiosError<{ message: string }> = AxiosError<{ message: string }>
 >(
-  request: <T>(payload: T) => Promise<R>
+  request: <P>(payload: P) => Promise<{ data: D }>
 ) => {
-  return async <T>(payload?: T) => {
+  return async <P>(payload?: P) => {
     try {
       const res = await request(payload);
       return { data: res.data, error: null };

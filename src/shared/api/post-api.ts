@@ -22,6 +22,6 @@ export const getPostByIdApi = fetchDecorator<Post>((payload) => {
   return instance.get(`posts/${payload}`);
 });
 
-export const deletePostByIdApi = fetchDecorator((payload) => {
+export const deletePostByIdApi = fetchDecorator<void>((payload) => {
   return instance.delete(`posts/${payload}`);
 });

@@ -1,14 +1,15 @@
 import { useState } from "react";
 
 import type { FetchResponse } from "../../typescript/types";
+import type { AxiosError } from "axios";
 
-function useRequest<T, E>() {
-  const [state, setState] = useState<T | null>(null);
+function useRequest<D>() {
+  const [state, setState] = useState<D | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<E | null>(null);
+  const [error, setError] = useState<AxiosError<{ message: string }> | null>(null);
 
   const sendRequest = async (
-    request: (payload?: unknown) => Promise<FetchResponse<T, E >>
+    request: <P>(payload?: P) => Promise<FetchResponse<D>>
   ) => {
     setLoading(true);
     setError(null);

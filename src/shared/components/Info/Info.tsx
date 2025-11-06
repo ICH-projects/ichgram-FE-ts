@@ -1,23 +1,25 @@
 import { useEffect, useState } from "react";
 
-import styles from "./LoadingErrorOutput.module.css";
+import styles from "./Info.module.css";
 
-export default function LoadingErrorOutput({
-  className = "",
-  loading = false,
-  error = null,
-  message = null,
-  render = true,
-  timeout = 5000,
-}: {
+interface IInfoProps {
   className?: string | null;
   loading?: boolean;
   error?: string | null;
   message?: string | null;
   render?: boolean;
   timeout?: number;
-}) {
-  const fullClassName = `${styles.loadingErrorOutput} ${className}`;
+}
+
+export default function Info({
+  className = "",
+  loading = false,
+  error = null,
+  message = null,
+  render = true,
+  timeout = 5000,
+}: IInfoProps) {
+  const fullClassName = `${styles.main} ${className}`;
 
   const [localMessage, setLocalMessage] = useState(message);
 

@@ -8,7 +8,7 @@ import TextField from "../../../shared/components/TextField/TextField";
 import Button from "../../../shared/components/Button/Button";
 import Divider from "../../../shared/components/Divider/Divider";
 import LinkApp from "../../../shared/components/LinkApp/LinkApp";
-import LoadingErrorOutput from "../../../shared/components/LoadingErrorOutput/LoadingErrorOutput";
+import Info from "../../../shared/components/Info/Info";
 
 import { fields, defaultValues } from "./fields";
 import { registerSchema } from "../schemes";
@@ -80,7 +80,7 @@ export default function AuthLoginForm({
           Sign up?
         </LinkApp>
       </div>
-      <LoadingErrorOutput loading={loading} error={error} message={message} />
+      <Info loading={loading} error={error} message={message} />
     </div>
   );
 }

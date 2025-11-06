@@ -3,16 +3,32 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { useForm, type SubmitHandler } from "react-hook-form";
 
-import { LikeIcon, CommentIcon } from "../../../shared/components/icons";
+import type {
+  Comment,
+  Follow,
+  Like,
+  Post,
+  User,
+} from "../../../typescript/types";
 
 import { selectUser } from "../../../redux/auth/auth-selectors";
 import { toNotificationFormat } from "../../../shared/utils/dateFormat";
+import { isUserFollowed } from "../../../shared/utils/user";
 
-import type { Comment, Post, User } from "../../../typescript/types";
+import { LikeIcon, CommentIcon } from "../../../shared/components/icons";
 
 import styles from "./PostCard.module.css";
 
 const { VITE_API_URL: baseURL } = import.meta.env;
+
+interface IPostCardProps {
+  className?: string;
+  post: Post;
+  likePost: (like: Like) => Promise<Like>;
+  sendComment: (comment: Comment) => Promise<Comment>;
+  followUser: (follow: Follow) => Promise<Follow>;
+  showPost: (postId: number) => void;
+}
 
 export default function PostCard({
   className = "",
@@ -21,26 +37,14 @@ export default function PostCard({
   sendComment,
   followUser,
   showPost,
-}: {
-  className?: string;
-  post: Post;
-  likePost: (postId: number) => void;
-  sendComment: (comment: Comment) => void;
-  followUser: (userId: number) => void;
-  showPost: (postId: number) => void;
-}) {
+}: IPostCardProps) {
   const fullClassName = `${styles.card} ${className} `;
 
   const [isTextOverflowed, setIsTextOverflowed] = useState(false);
   const [showCommentForm, setShowCommentForm] = useState(false);
   const textRef = useRef(null);
   const currentUser: User = useSelector(selectUser)!;
-  const { register, handleSubmit } = useForm<{ comment: string }>();
-  const isPostUserFollowed: boolean = post.user?.followers
-    ? post.user?.followers.some(
-        (follow) => follow.followerUserId === currentUser.id
-      )
-    : false;
+  const { register, handleSubmit, reset } = useForm<{ comment: string }>();
 
   useEffect(() => {
     setIsTextOverflowed(
@@ -53,23 +57,26 @@ export default function PostCard({
     );
   }, []);
 
-  const handleFollowButtonClick = () => {
-    if (post.userId === currentUser.id) return;
-    followUser(post.userId);
+  const handleOnSubmitComment: SubmitHandler<{ comment: string }> = (
+    values
+  ) => {
+    sendComment({ postId: post.id, text: values.comment } as Comment);
+    reset();
   };
 
   const handleLikeButtonClick = () => {
     // if (post.userId === currentUser.id) return;      // !!!!! not remove
     if (post.isLiked) return;
-    likePost(post.id);
+    likePost({ postId: post.id } as Like);
   };
+
+  const handleFollowButtonClick = () => {
+    if (post.userId === currentUser.id) return;
+    followUser({ targetUserId: post.userId } as Follow);
+  };
+
   const handleCommentButtonClick = () => {
     setShowCommentForm((prev) => !prev);
-  };
-  const handleOnSubmitComment: SubmitHandler<{ comment: string }> = (
-    values
-  ) => {
-    sendComment({ postId: post.id, text: values.comment } as Comment);
   };
 
   const handleReadMore = () => {
@@ -106,7 +113,7 @@ export default function PostCard({
           {post.user.username ? post.user.username : "Sashaa"}
         </Link>
         <p className={styles.date}>{toNotificationFormat(post.updatedAt)}</p>
-        {currentUser.id !== post.user.id && !isPostUserFollowed && (
+        {!isUserFollowed(post.user, currentUser) && (
           <button
             className={styles.followBtn}
             onClick={handleFollowButtonClick}
@@ -145,7 +152,9 @@ export default function PostCard({
       </div>
 
       {post.totalLikes && post.totalLikes > 0 && (
-        <p className={styles.likes}>{`${post.totalLikes} likes`}</p>
+        <p className={styles.likes}>{`${post.totalLikes} ${
+          post.totalLikes == 1 ? "like" : "likes"
+        }`}</p>
       )}
       {showCommentForm && (
         <form

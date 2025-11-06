@@ -1,101 +1,107 @@
 import { useState } from "react";
-import type { AxiosError } from "axios";
+
+import type { Comment, Follow, Like, Post } from "../../typescript/types";
 
 import useRequest from "../../shared/hooks/useRequest";
 import { createCommentApi } from "../../shared/api/comment-api";
 import { likePostApi } from "../../shared/api/like-api";
 import { followUserApi } from "../../shared/api/follow-api";
 
-import LoadingErrorOutput from "../../shared/components/LoadingErrorOutput/LoadingErrorOutput";
+import Info from "../../shared/components/Info/Info";
 import Modal from "../../shared/components/Modal/Modal";
 
 import PostCard from "./PostCard/PostCard";
 import PostDetail from "./PostDetail/PostDetail";
 
 import styles from "./Posts.module.css";
-import type {
-  Comment,
-  Follow,
-  Like,
-  Post,
-  ResponseData,
-} from "../../typescript/types";
+import { deletePostByIdApi } from "../../shared/api/post-api";
 
-export default function Posts({ posts = [] }: { posts: Post[] | undefined }) {
+interface IPostsProps {
+  posts: Post[];
+}
+
+export default function Posts({ posts }: IPostsProps) {
   const [render, setRender] = useState(true);
   const [message, setMessage] = useState<string | null | undefined>(null);
   const [modalHidden, setModalHidden] = useState(true);
-  const [postId, setPostId] = useState<number | null>(null);
+  const [detailedPostId, setDetailedPostId] = useState<number | null>(null);
 
-  const { loading, error, sendRequest } = useRequest<
-    ResponseData<unknown>,
-    AxiosError<{ message: string }>
-  >();
+  const { loading, error, sendRequest } = useRequest<unknown>();
 
   const showPost = (postId: number) => {
     setModalHidden(false);
-    setPostId(postId);
+    setDetailedPostId(postId);
   };
+
   const closePost = () => {
     setModalHidden(true);
-    setPostId(null);
+    setDetailedPostId(null);
   };
 
-  const handleSendComment = async (comment: Comment) => {
+  const handleSendComment = async (comment: Comment): Promise<Comment> => {
     const responseData = await sendRequest(() => createCommentApi(comment));
-    const createdComment = responseData?.payload as Comment;
-    setMessage(responseData?.message);
+    const createdComment = responseData as Comment;
+    setMessage(!error ? "Comment successfully created" : null);
     setRender((prev) => !prev);
     const post = posts.find((item) => item.id === createdComment.postId);
-    if (post) {
-      post.totalComments = (post.totalComments || 0) + 1;
-      if (!post.comments) post.comments = [];
-      post.comments.unshift(createdComment);
-      post.comments = post.comments.slice(0, 4);
-    }
+    if (!post) throw new Error("Post for adding comment not found");
+    post.totalComments = (post.totalComments || 0) + 1;
+    if (!post.comments) post.comments = [];
+    post.comments.unshift(createdComment);
+    post.comments = post.comments.slice(0, 4);
+    return createdComment;
   };
 
-  const likePost = async (postId: number) => {
-    const responseData = await sendRequest(() => likePostApi({ postId }));
-    const createdLike = responseData?.payload as Like;
-    setMessage(responseData?.message);
+  const handleLikePost = async (like: Like): Promise<Like> => {
+    const responseData = await sendRequest(() => likePostApi(like));
+    const createdLike = responseData as Like;
+    setMessage(!error ? "Like successfully created" : null);
     setRender((prev) => !prev);
     const post = posts.find((item) => item.id === createdLike.postId);
-    if (post) {
-      post.totalLikes = Number(post.totalLikes) + 1;
-      post.isLiked = true;
-    }
+    if (!post) throw new Error("Post for adding like not found");
+    post.totalLikes = (post.totalLikes || 0) + 1;
+    post.isLiked = true;
+    return createdLike;
   };
 
-  const followUser = async (targetUserId: number) => {
-    const responseData = await sendRequest(() =>
-      followUserApi({ targetUserId })
-    );
-    const createdFollow = responseData?.payload as Follow;
-    setMessage(responseData?.message);
+  const handleFollowUser = async (follow: Follow): Promise<Follow> => {
+    const responseData = await sendRequest(() => followUserApi(follow));
+    const createdFollow = responseData as Follow;
+    setMessage(!error ? "Follow successfully created" : null);
     setRender((prev) => !prev);
-    posts.map((post) => {
+    posts!.map((post) => {
       if (post.user.id === createdFollow.targetUserId)
         (post.user.followers || []).push(createdFollow);
       return post;
     });
+    return createdFollow;
   };
 
-  const elements = posts.map((post) => (
-    <PostCard
-      key={post.id}
-      post={post}
-      sendComment={handleSendComment}
-      likePost={likePost}
-      followUser={followUser}
-      showPost={showPost}
-    />
-  ));
+  const handleDeletePost = async (id: number): Promise<boolean> => {
+    await sendRequest(() => deletePostByIdApi(id));
+    setMessage(!error ? "Post successfully deleted" : null);
+    setRender((prev) => !prev);
+    if (error) return false;
+    posts = posts.filter((item) => item.id !== id);
+    return true;
+  };
 
+  const elements = posts.map((post) => {
+    return (
+      <PostCard
+        key={post.id}
+        post={post}
+        sendComment={handleSendComment}
+        likePost={handleLikePost}
+        followUser={handleFollowUser}
+        showPost={showPost}
+      />
+    );
+  });
   return (
     <>
       <div className={styles.posts}>{elements}</div>
-      <LoadingErrorOutput
+      <Info
         loading={loading}
         error={error?.response?.data.message || error?.message}
         message={message}
@@ -103,7 +109,15 @@ export default function Posts({ posts = [] }: { posts: Post[] | undefined }) {
         className={styles.message}
       />
       <Modal hidden={modalHidden} onClickHandle={closePost}>
-        <PostDetail postId={postId} close={closePost} />
+        <PostDetail
+          postId={detailedPostId}
+          close={closePost}
+          message={message}
+          sendComment={handleSendComment}
+          likePost={handleLikePost}
+          followUser={handleFollowUser}
+          deletePost={handleDeletePost}
+        />
       </Modal>
     </>
   );

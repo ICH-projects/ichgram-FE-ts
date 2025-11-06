@@ -1,3 +1,5 @@
+import type { AxiosError } from "axios";
+
 export type User = {
   id?: number;
   email: string;
@@ -21,27 +23,22 @@ export type Store = {
   auth: AuthStore;
 };
 
-export type FetchResponse<T, E> =
+export type FetchResponse<T> =
   | {
       data: T;
       error: null;
     }
   | {
       data: null;
-      error: E;
+      error: AxiosError<{ message: string }>;
     };
 
-export type ResponseData<T> = {
-  message: string;
-  payload: T;
-};
-
 export type Comment = {
-  id?: number;
+  id: number;
   userId: number;
   postId: number;
   text: string;
-  updatedAt?: Date;
+  updatedAt: Date;
   user: User;
 };
 
@@ -52,7 +49,7 @@ export type Like = {
 };
 
 export type Post = {
-  id?: number;
+  id: number;
   userId: number;
   image: string;
   updatedAt: Date;
