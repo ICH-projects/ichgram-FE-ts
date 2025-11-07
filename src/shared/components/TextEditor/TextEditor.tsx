@@ -6,24 +6,24 @@ import {
   type MouseEvent,
 } from "react";
 import EmojiPicker, { type EmojiClickData } from "emoji-picker-react";
-import type { FieldValues, UseFormRegister } from "react-hook-form";
+import type { FieldValues, Path, UseFormRegister } from "react-hook-form";
 
 import styles from "./TextEditor.module.css";
 
-interface ITextEditorProps {
+interface ITextEditorProps<TFieldValues extends FieldValues> {
   className?: string;
-  register: UseFormRegister<FieldValues>;
-  name: string;
+  register: UseFormRegister<TFieldValues>;
+  name: Path<TFieldValues>;
   reset: boolean;
 }
 
-export default function TextEditor({
+export default function TextEditor<TFieldValues extends FieldValues>({
   className = "",
   register,
-  name = "text",
+  name,
   reset = true,
   ...props
-}: ITextEditorProps) {
+}: ITextEditorProps<TFieldValues>) {
   const fullClassName = `${styles.textEditor} ${className}`;
 
   const cursorPosition = useRef(0);

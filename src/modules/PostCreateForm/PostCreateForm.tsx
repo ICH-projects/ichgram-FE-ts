@@ -1,5 +1,5 @@
-import { useForm, type FieldErrors, type FieldValues } from "react-hook-form";
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useCallback, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import type { Post } from "../../typescript/types";
@@ -7,13 +7,18 @@ import type { Post } from "../../typescript/types";
 import useRequest from "../../shared/hooks/useRequest";
 import { createPostApi } from "../../shared/api/post-api";
 
-import Upload from "../../shared/components/Upload/Upload";
+import { UploadIcon } from "../../shared/components/icons";
 import TextEditor from "../../shared/components/TextEditor/TextEditor";
 import Info from "../../shared/components/Info/Info";
 
-import { fields, createPostSchema } from "./fields";
+import {
+  fields,
+  createPostSchema,
+  type FormData,
+} from "./fields";
 
 import styles from "./PostCreateForm.module.css";
+import { useDropzone } from "react-dropzone";
 
 interface IPostCreateFormProps {
   closeForm: () => void;
@@ -25,20 +30,35 @@ export default function PostCreateForm({ closeForm }: IPostCreateFormProps) {
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm({
+  } = useForm<FormData>({
     resolver: yupResolver(createPostSchema),
     mode: "onChange",
   });
+  const [imgSrc, setImgSrc] = useState<string | null>();
   const [message, setMessage] = useState<string | null>(null);
   const [reset, setReset] = useState(false);
   const { loading, error, sendRequest } = useRequest<Post>();
 
-  const handleOnSubmit = async (values: FieldValues) => {
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    console.log(acceptedFiles);
+    setImgSrc(URL.createObjectURL(acceptedFiles[0]));
+    setValue(fields.image.name as keyof FormData, acceptedFiles[0]);
+  }, []);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: { "image/*": [] },
+  });
+
+  const handleOnSubmit = async (values: unknown) => {
     await sendRequest(() => createPostApi(values));
     if (!error) setMessage("Post successfully created. Form will closed");
+    setReset((prev) => !prev);
+    setValue(fields.image.name as keyof FormData, {});
+    setImgSrc(null);
     setTimeout(() => {
       closeForm();
-    }, 5000);
+    }, 2000);
   };
 
   return (
@@ -60,15 +80,38 @@ export default function PostCreateForm({ closeForm }: IPostCreateFormProps) {
           </button>
         </div>
         <div className={styles.uploadWrapper}>
-          <Upload
-            {...fields.image}
-            setValue={setValue}
-            reset={reset}
-            // form="postForm"
-          />
+          <div {...getRootProps()} className={styles.upload}>
+            <input {...getInputProps()} />
+            <div
+              className={
+                isDragActive
+                  ? `${styles.dragIconWrapper} ${styles.isDragActive}`
+                  : styles.dragIconWrapper
+              }
+            >
+              {imgSrc ? (
+                <img
+                  src={imgSrc}
+                  alt=""
+                  className={
+                    isDragActive
+                      ? `${styles.preview} ${styles.isDragActive}`
+                      : styles.preview
+                  }
+                />
+              ) : (
+                <UploadIcon className={styles.dragIcon} />
+              )}
+            </div>
+          </div>
         </div>
         <div className={styles.textEditorWrapper}>
-          <TextEditor register={register} {...fields.comment} reset={reset} />
+          <TextEditor
+            register={register}
+            {...fields.comment}
+            name={fields.comment.name as keyof FormData}
+            reset={reset}
+          />
         </div>
         <div className={styles.messageWrapper}>
           <Info

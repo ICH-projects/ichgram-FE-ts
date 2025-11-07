@@ -1,23 +1,28 @@
 import { useEffect, useRef, type ChangeEvent } from "react";
 
 import styles from "./Upload.module.css";
-import type { FieldValues, UseFormSetValue } from "react-hook-form";
+import type { UseFormSetValue, FieldValues, Path } from "react-hook-form";
 
-interface IUploadProps {
+// import { type FormData } from "../../../modules/PostCreateForm/fields";
+
+interface IUploadProps<TFieldValues extends FieldValues> {
   className?: string;
-  name: string;
+  name: Path<TFieldValues>;
+  setValue: UseFormSetValue<TFieldValues>;
   // setValue: UseFormSetValue<FieldValues>;
-  setValue: (...args: [])=>void;
+  // setValue: UseFormSetValue<FormData>;
+  // setValue: (name:  unknown, value: unknown, options?: unknown)=>void;
+  // setValue: () => void;
   reset: boolean;
 }
 
-export default function Upload({
+export default function Upload<TFieldValues extends FieldValues>({
   className = "",
   name,
   setValue,
   reset = true,
   ...props
-}: IUploadProps) {
+}: IUploadProps<TFieldValues>) {
   const fullClassName = `${styles.upload} ${className}`;
 
   const imageRef = useRef<HTMLImageElement | null>(null);
@@ -33,6 +38,7 @@ export default function Upload({
     const file = event.target.files[0];
     imageRef.current.src = URL.createObjectURL(file);
     setValue(name, file);
+    // setValue(name as keyof FieldValues, file);
   };
 
   return (

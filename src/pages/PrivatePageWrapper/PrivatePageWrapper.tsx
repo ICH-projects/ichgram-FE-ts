@@ -14,7 +14,7 @@ import styles from "./PrivatePageWrapper.module.css";
 export default function PrivatePageWrapper(): JSX.Element {
   const [modalHidden, setModalHidden] = useState(true);
   const [childType, setChildType] = useState<ChildType | null>(null);
-  const contentRef = useRef(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   const onModalClickHandler = () => {
     setModalHidden(true);
@@ -25,13 +25,25 @@ export default function PrivatePageWrapper(): JSX.Element {
   const onMenuClick = (childTypeParam: ChildType | undefined) => {
     if (!childTypeParam) {
       setChildType(null);
+      (contentRef.current as unknown as HTMLDivElement).style.overflowY =
+        "auto";
       return setModalHidden(true);
     }
     if (childTypeParam === childType) {
+      if (modalHidden) {
+        (contentRef.current as unknown as HTMLDivElement).style.overflowY =
+          "hidden";
+      } else {
+        (contentRef.current as unknown as HTMLDivElement).style.overflowY =
+          "auto";
+      }
+
       return setModalHidden((prev) => !prev);
     }
     setModalHidden(false);
     setChildType(childTypeParam);
+    (contentRef.current as unknown as HTMLDivElement).style.overflowY =
+      "hidden";
   };
 
   return (
@@ -43,7 +55,9 @@ export default function PrivatePageWrapper(): JSX.Element {
         <div ref={contentRef} className={styles.content}>
           <Outlet />
           <Modal hidden={modalHidden} onClickHandle={onModalClickHandler}>
-            {childType === "create" && <PostCreateForm closeForm={onModalClickHandler}/>}
+            {childType === "create" && (
+              <PostCreateForm closeForm={onModalClickHandler} />
+            )}
             {childType === "notifications" && "notifications"}
             {childType === "search" && "search"}
           </Modal>

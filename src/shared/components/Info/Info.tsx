@@ -21,22 +21,23 @@ export default function Info({
 }: IInfoProps) {
   const fullClassName = `${styles.main} ${className}`;
 
-  const [localMessage, setLocalMessage] = useState(message);
+  const [localMessage, setLocalMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    setLocalMessage(message);
-    if (!message) return;
-    const t = setTimeout(() => {
-      setLocalMessage(null);
-    }, timeout);
-    return () => clearTimeout(t);
+    if (message) {
+      setLocalMessage(message);
+      const t = setTimeout(() => {
+        setLocalMessage(null);
+      }, timeout);
+      return () => clearTimeout(t);
+    }
   }, [message, render, timeout]);
 
   return (
     <div className={fullClassName}>
       {loading && <p className={styles.loading}>Loading...</p>}
-      {!!error && <p className={styles.error}>Error: {error}</p>}
-      {!!localMessage && <p className={styles.info}>Info: {localMessage}</p>}
+      {Boolean(error) && <p className={styles.error}>Error: {error}</p>}
+      {localMessage && <p className={styles.info}>Info: {localMessage}</p> }
     </div>
   );
 }

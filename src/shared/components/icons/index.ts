@@ -11,3 +11,4 @@ export { default as LikeIcon } from "./LikeIcon";
 // export { default as TelegramIcon } from "./TelegramIcon";
 export { default as EndIcon } from "./EndIcon";
 export { default as AdditionalIcon } from "./AdditionalIcon";
+export { default as UploadIcon } from "./UploadIcon";
