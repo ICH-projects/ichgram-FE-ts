@@ -11,11 +11,7 @@ import { UploadIcon } from "../../shared/components/icons";
 import TextEditor from "../../shared/components/TextEditor/TextEditor";
 import Info from "../../shared/components/Info/Info";
 
-import {
-  fields,
-  createPostSchema,
-  type FormData,
-} from "./fields";
+import { fields, createPostSchema, type FormData } from "./fields";
 
 import styles from "./PostCreateForm.module.css";
 import { useDropzone } from "react-dropzone";
@@ -62,16 +58,14 @@ export default function PostCreateForm({ closeForm }: IPostCreateFormProps) {
   };
 
   return (
-    <div
-      className={styles.createPost}
-      onClick={(event) => {
-        event.stopPropagation();
-      }}
-    >
+    <div className={styles.createPost}>
       <form
         onSubmit={handleSubmit(handleOnSubmit)}
         className={styles.form}
         id="postForm"
+        onClick={(event) => {
+          event.stopPropagation();
+        }}
       >
         <div className={styles.header}>
           <h1 className={styles.title}>Create new post</h1>

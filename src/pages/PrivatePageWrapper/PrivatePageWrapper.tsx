@@ -15,6 +15,7 @@ export default function PrivatePageWrapper(): JSX.Element {
   const [modalHidden, setModalHidden] = useState(true);
   const [childType, setChildType] = useState<ChildType | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   const onModalClickHandler = () => {
     setModalHidden(true);
@@ -37,13 +38,19 @@ export default function PrivatePageWrapper(): JSX.Element {
         (contentRef.current as unknown as HTMLDivElement).style.overflowY =
           "auto";
       }
-
+      offsetModal();
       return setModalHidden((prev) => !prev);
     }
     setModalHidden(false);
     setChildType(childTypeParam);
     (contentRef.current as unknown as HTMLDivElement).style.overflowY =
       "hidden";
+    offsetModal();
+  };
+
+  const offsetModal = () => {
+    const modalTopOffset: number = contentRef.current?.scrollTop || 0;
+    modalRef.current?.style.setProperty("top", `${modalTopOffset}px`);
   };
 
   return (
@@ -54,7 +61,11 @@ export default function PrivatePageWrapper(): JSX.Element {
         </div>
         <div ref={contentRef} className={styles.content}>
           <Outlet />
-          <Modal hidden={modalHidden} onClickHandle={onModalClickHandler}>
+          <Modal
+            hidden={modalHidden}
+            onClickHandle={onModalClickHandler}
+            ref={modalRef}
+          >
             {childType === "create" && (
               <PostCreateForm closeForm={onModalClickHandler} />
             )}

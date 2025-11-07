@@ -6,8 +6,8 @@ interface IModalProps {
   variant?: string;
   hidden?: boolean;
   onClickHandle?: () => void;
-  // children?: (JSX.Element | string)[] | JSX.Element | string;
   children?: ReactNode;
+  ref: React.RefObject<HTMLDivElement | null>
 }
 
 export default function Modal({
@@ -16,10 +16,11 @@ export default function Modal({
   hidden = true,
   onClickHandle,
   children,
+  ref,
 }: IModalProps) {
   const fullClassName = `${styles.modal} ${className} ${styles[variant]}`;
   return (
-    <div className={fullClassName} hidden={hidden} onClick={onClickHandle}>
+    <div className={fullClassName} hidden={hidden} onClick={onClickHandle} ref={ref}>
       {children}
     </div>
   );
