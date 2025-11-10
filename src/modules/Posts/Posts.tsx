@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import type { Comment, Follow, Like, Post } from "../../typescript/types";
 
@@ -18,24 +18,36 @@ import { deletePostByIdApi } from "../../shared/api/post-api";
 
 interface IPostsProps {
   posts: Post[];
+  isExplore?: boolean;
 }
 
-export default function Posts({ posts }: IPostsProps) {
+export default function Posts({ posts, isExplore = false }: IPostsProps) {
   const [render, setRender] = useState(true);
   const [message, setMessage] = useState<string | null | undefined>(null);
   const [modalHidden, setModalHidden] = useState(true);
   const [detailedPostId, setDetailedPostId] = useState<number | null>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   const { loading, error, sendRequest } = useRequest<unknown>();
 
   const showPost = (postId: number) => {
     setModalHidden(false);
     setDetailedPostId(postId);
+    // (contentRef.current as unknown as HTMLDivElement).style.overflowY =
+    //   "hidden";
+    offsetModal()
   };
 
   const closePost = () => {
     setModalHidden(true);
     setDetailedPostId(null);
+    // (contentRef.current as unknown as HTMLDivElement).style.overflowY = "auto";
+  };
+
+  const offsetModal = () => {
+    const modalTopOffset: number = contentRef.current?.scrollTop || 0;
+    modalRef.current?.style.setProperty("top", `${modalTopOffset}px`);
   };
 
   const handleSendComment = async (comment: Comment): Promise<Comment> => {
@@ -95,12 +107,15 @@ export default function Posts({ posts }: IPostsProps) {
         likePost={handleLikePost}
         followUser={handleFollowUser}
         showPost={showPost}
+        detailed={!isExplore}
       />
     );
   });
   return (
     <>
-      <div className={styles.posts}>{elements}</div>
+      <div className={styles.posts} ref={contentRef}>
+        {elements}
+      </div>
       <Info
         loading={loading}
         error={error?.response?.data.message || error?.message}
@@ -108,7 +123,7 @@ export default function Posts({ posts }: IPostsProps) {
         render={render}
         className={styles.message}
       />
-      <Modal hidden={modalHidden} onClickHandle={closePost}>
+      <Modal hidden={modalHidden} onClickHandle={closePost} ref={modalRef}>
         <PostDetail
           postId={detailedPostId}
           close={closePost}

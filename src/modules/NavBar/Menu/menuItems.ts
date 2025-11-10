@@ -4,7 +4,7 @@ interface IMenuConfig {
   title: string;
   icon: string;
   link?: string;
-  child?: ChildType;
+  childType?: ChildType;
 }
 
 const menuConfig: IMenuConfig[] = [
@@ -16,7 +16,7 @@ const menuConfig: IMenuConfig[] = [
   {
     title: "Search",
     icon: "SearchIcon",
-    child: "search",
+    childType: "search",
   },
   {
     title: "Explore",
@@ -31,12 +31,12 @@ const menuConfig: IMenuConfig[] = [
   {
     title: "Notifications",
     icon: "NotificationIcon",
-    child: "notifications",
+    childType: "notifications",
   },
   {
     title: "Create",
     icon: "CreateIcon",
-    child: "create",
+    childType: "create",
   },
   // {
   //     title: "Profile",

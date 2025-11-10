@@ -34,3 +34,5 @@ export const commentSchema = yup.object().shape({
   // title: yup.string().min(0),
   // image: yup.mixed().required("A file is required"),
 });
+
+export type FormData = yup.InferType<typeof commentSchema>;

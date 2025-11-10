@@ -12,16 +12,6 @@ export type User = {
   followers?: Follow[];
 };
 
-export type AuthStore = {
-  loading: boolean;
-  error: string | null;
-  message: string | null;
-  user: User | null;
-};
-
-export type Store = {
-  auth: AuthStore;
-};
 
 export type FetchResponse<T> =
   | {

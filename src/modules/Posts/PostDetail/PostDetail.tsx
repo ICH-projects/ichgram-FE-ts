@@ -25,7 +25,7 @@ import {
 
 import CommentCard from "./CommentCard/CommentCard";
 
-import { fields, defaultValues, commentSchema } from "./fields";
+import { fields, defaultValues, commentSchema, type FormData } from "./fields";
 
 import styles from "./PostDetail.module.css";
 
@@ -205,7 +205,12 @@ export default function PostDetail({
           )}
           className={styles.inputWrapper}
         >
-          <TextEditor register={register} {...fields.text} reset={reset} />
+          <TextEditor
+            register={register}
+            {...fields.text}
+            name={fields.text.name as keyof FormData}
+            reset={reset}
+          />
           <button type="submit" className={styles.btn}>
             Send
           </button>

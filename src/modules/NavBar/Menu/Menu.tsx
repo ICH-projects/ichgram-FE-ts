@@ -7,7 +7,7 @@ import styles from "./Menu.module.css";
 interface IMenuProps {
   className?: string;
   variant?: string;
-  onMenuClick?: (param: ChildType | undefined) => unknown;
+  onMenuClick?: (param: ChildType | undefined, props: unknown) => unknown;
 }
 
 export default function Menu({
@@ -17,12 +17,12 @@ export default function Menu({
 }: IMenuProps) {
   const fullClassName = `${styles.menu} ${className} ${styles[variant]}`;
 
-  const elements = menuItems.map(({ title, icon, link, child }) => {
+  const elements = menuItems.map(({ title, icon, link, childType }) => {
     return (
       <li
         key={title}
         className={styles.item}
-        onClick={() => onMenuClick(child)}
+        onClick={() => onMenuClick(childType, {})}
       >
         <Link to={link || ""} className={styles.link}>
           <img src={`/src/assets/icons/${icon}.svg`} className={styles.icon} />

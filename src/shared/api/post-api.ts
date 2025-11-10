@@ -10,7 +10,7 @@ export const getLastUpdatedPostsApi = fetchDecorator<Post[]>(() => {
   return instance.get("posts/updates");
 });
 
-export const getPostsApi = fetchDecorator(() => {
+export const getPostsApi = fetchDecorator<Post[]>(() => {
   return instance.get("posts");
 });
 

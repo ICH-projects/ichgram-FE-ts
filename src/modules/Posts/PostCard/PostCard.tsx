@@ -28,6 +28,7 @@ interface IPostCardProps {
   sendComment: (comment: Comment) => Promise<Comment>;
   followUser: (follow: Follow) => Promise<Follow>;
   showPost: (postId: number) => void;
+  detailed?: boolean;
 }
 
 export default function PostCard({
@@ -37,6 +38,7 @@ export default function PostCard({
   sendComment,
   followUser,
   showPost,
+  detailed = true,
 }: IPostCardProps) {
   const fullClassName = `${styles.card} ${className} `;
 
@@ -101,27 +103,29 @@ export default function PostCard({
 
   return (
     <div className={fullClassName}>
-      <div className={styles.header}>
-        <div className={styles.avatarWrapper}>
-          <img
-            className={styles.avatarWrapper}
-            src={`${baseURL}/${post.user?.avatar}`}
-            alt=""
-          />
+      {detailed && (
+        <div className={styles.header}>
+          <div className={styles.avatarWrapper}>
+            <img
+              className={styles.avatarWrapper}
+              src={`${baseURL}/${post.user?.avatar}`}
+              alt=""
+            />
+          </div>
+          <Link to={`/profile/${post.userId}`} className={styles.username}>
+            {post.user.username ? post.user.username : "Sashaa"}
+          </Link>
+          <p className={styles.date}>{toNotificationFormat(post.updatedAt)}</p>
+          {!isUserFollowed(post.user, currentUser) && (
+            <button
+              className={styles.followBtn}
+              onClick={handleFollowButtonClick}
+            >
+              follow
+            </button>
+          )}
         </div>
-        <Link to={`/profile/${post.userId}`} className={styles.username}>
-          {post.user.username ? post.user.username : "Sashaa"}
-        </Link>
-        <p className={styles.date}>{toNotificationFormat(post.updatedAt)}</p>
-        {!isUserFollowed(post.user, currentUser) && (
-          <button
-            className={styles.followBtn}
-            onClick={handleFollowButtonClick}
-          >
-            follow
-          </button>
-        )}
-      </div>
+      )}
 
       <button className={styles.imgWrapper} onClick={() => showPost(post.id)}>
         <img
@@ -130,33 +134,38 @@ export default function PostCard({
           className={styles.img}
         />
       </button>
-      <div className={styles.controlsWrapper}>
-        <button
-          className={styles.controlButton}
-          onClick={handleLikeButtonClick}
-        >
-          <LikeIcon
-            className={`${styles.controlIcon} ${post.isLiked && styles.filled}`}
-          />
-        </button>
-        <button
-          className={styles.controlButton}
-          onClick={handleCommentButtonClick}
-        >
-          <CommentIcon
-            className={`${styles.controlIcon} ${
-              showCommentForm && styles.filled
-            }`}
-          />
-        </button>
-      </div>
 
-      {post.totalLikes && post.totalLikes > 0 && (
+      {detailed && (
+        <div className={styles.controlsWrapper}>
+          <button
+            className={styles.controlButton}
+            onClick={handleLikeButtonClick}
+          >
+            <LikeIcon
+              className={`${styles.controlIcon} ${
+                post.isLiked && styles.filled
+              }`}
+            />
+          </button>
+          <button
+            className={styles.controlButton}
+            onClick={handleCommentButtonClick}
+          >
+            <CommentIcon
+              className={`${styles.controlIcon} ${
+                showCommentForm && styles.filled
+              }`}
+            />
+          </button>
+        </div>
+      )}
+
+      {detailed && post.totalLikes && post.totalLikes > 0 && (
         <p className={styles.likes}>{`${post.totalLikes} ${
           post.totalLikes == 1 ? "like" : "likes"
         }`}</p>
       )}
-      {showCommentForm && (
+      {detailed && showCommentForm && (
         <form
           onSubmit={handleSubmit(handleOnSubmitComment)}
           className={styles.commentForm}
@@ -171,19 +180,24 @@ export default function PostCard({
           </button>
         </form>
       )}
-      <div className={styles.commentsWrapper} ref={textRef}>
-        {commentElements}
-      </div>
-      {isTextOverflowed && (
+      {detailed && (
+        <div className={styles.commentsWrapper} ref={textRef}>
+          {commentElements}
+        </div>
+      )}
+      {detailed && isTextOverflowed && (
         <p className={styles.readMore} onClick={handleReadMore}>
           ...more
         </p>
       )}
-      {!isTextOverflowed && comments?.length && comments?.length > 2 && (
-        <Link to={`/posts/${post.id}`} className={styles.commentsFooter}>
-          {`View all comments (${post.totalComments})`}
-        </Link>
-      )}
+      {detailed &&
+        !isTextOverflowed &&
+        comments?.length &&
+        comments?.length > 2 && (
+          <Link to={`/posts/${post.id}`} className={styles.commentsFooter}>
+            {`View all comments (${post.totalComments})`}
+          </Link>
+        )}
     </div>
   );
 }

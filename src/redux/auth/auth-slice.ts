@@ -14,7 +14,14 @@ import {
   refreshTokens,
 } from "./auth-thunks";
 
-import type { AuthStore } from "../../typescript/types";
+import type { User } from "../../typescript/types";
+
+export type AuthStore = {
+  loading: boolean;
+  error: string | null;
+  message: string | null;
+  user: User | null;
+};
 
 const initialState: AuthStore = {
   loading: false,

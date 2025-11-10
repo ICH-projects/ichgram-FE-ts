@@ -1,8 +1,13 @@
 import { useForm } from "react-hook-form";
 import { useCallback, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useDropzone } from "react-dropzone";
+import { useDispatch } from "react-redux";
 
 import type { Post } from "../../typescript/types";
+
+import type { AppDispatch } from "../../redux/store";
+import { hideModal } from "../../redux/modal/modal-slice";
 
 import useRequest from "../../shared/hooks/useRequest";
 import { createPostApi } from "../../shared/api/post-api";
@@ -14,13 +19,8 @@ import Info from "../../shared/components/Info/Info";
 import { fields, createPostSchema, type FormData } from "./fields";
 
 import styles from "./PostCreateForm.module.css";
-import { useDropzone } from "react-dropzone";
 
-interface IPostCreateFormProps {
-  closeForm: () => void;
-}
-
-export default function PostCreateForm({ closeForm }: IPostCreateFormProps) {
+export default function PostCreateForm() {
   const {
     register,
     handleSubmit,
@@ -30,6 +30,8 @@ export default function PostCreateForm({ closeForm }: IPostCreateFormProps) {
     resolver: yupResolver(createPostSchema),
     mode: "onChange",
   });
+  const dispatch = useDispatch<AppDispatch>();
+
   const [imgSrc, setImgSrc] = useState<string | null>();
   const [message, setMessage] = useState<string | null>(null);
   const [reset, setReset] = useState(false);
@@ -53,7 +55,7 @@ export default function PostCreateForm({ closeForm }: IPostCreateFormProps) {
     setValue(fields.image.name as keyof FormData, {});
     setImgSrc(null);
     setTimeout(() => {
-      closeForm();
+      dispatch(hideModal());
     }, 2000);
   };
 

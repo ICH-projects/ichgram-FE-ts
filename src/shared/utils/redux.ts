@@ -1,4 +1,4 @@
-import type { AuthStore } from "../../typescript/types";
+import type { AuthStore } from "../../redux/auth/auth-slice";
 
 export const pending = (store: AuthStore) => {
   store.loading = true;
