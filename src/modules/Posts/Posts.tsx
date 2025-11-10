@@ -1,4 +1,5 @@
-import { useRef, useState } from "react";
+import {  useState } from "react";
+import { useDispatch } from "react-redux";
 
 import type { Comment, Follow, Like, Post } from "../../typescript/types";
 
@@ -8,13 +9,12 @@ import { likePostApi } from "../../shared/api/like-api";
 import { followUserApi } from "../../shared/api/follow-api";
 
 import Info from "../../shared/components/Info/Info";
-import Modal from "../../shared/components/Modal/Modal";
 
 import PostCard from "./PostCard/PostCard";
-import PostDetail from "./PostDetail/PostDetail";
 
 import styles from "./Posts.module.css";
-import { deletePostByIdApi } from "../../shared/api/post-api";
+import {type AppDispatch } from "../../redux/store";
+import { showModal } from "../../redux/modal/modal-slice";
 
 interface IPostsProps {
   posts: Post[];
@@ -24,30 +24,24 @@ interface IPostsProps {
 export default function Posts({ posts, isExplore = false }: IPostsProps) {
   const [render, setRender] = useState(true);
   const [message, setMessage] = useState<string | null | undefined>(null);
-  const [modalHidden, setModalHidden] = useState(true);
-  const [detailedPostId, setDetailedPostId] = useState<number | null>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const modalRef = useRef<HTMLDivElement>(null);
+  const dispatch = useDispatch<AppDispatch>();
 
   const { loading, error, sendRequest } = useRequest<unknown>();
 
   const showPost = (postId: number) => {
-    setModalHidden(false);
-    setDetailedPostId(postId);
-    // (contentRef.current as unknown as HTMLDivElement).style.overflowY =
-    //   "hidden";
-    offsetModal()
-  };
-
-  const closePost = () => {
-    setModalHidden(true);
-    setDetailedPostId(null);
-    // (contentRef.current as unknown as HTMLDivElement).style.overflowY = "auto";
-  };
-
-  const offsetModal = () => {
-    const modalTopOffset: number = contentRef.current?.scrollTop || 0;
-    modalRef.current?.style.setProperty("top", `${modalTopOffset}px`);
+    dispatch(
+      showModal({
+        childType: "post_detail",
+        childProps: {
+           postId ,
+          // message: { message },
+          // sendComment: { handleSendComment },
+          // likePost: { handleLikePost },
+          // followUser: { handleFollowUser },
+          // deletePost: { handleDeletePost },
+        },
+      })
+    );
   };
 
   const handleSendComment = async (comment: Comment): Promise<Comment> => {
@@ -89,15 +83,6 @@ export default function Posts({ posts, isExplore = false }: IPostsProps) {
     return createdFollow;
   };
 
-  const handleDeletePost = async (id: number): Promise<boolean> => {
-    await sendRequest(() => deletePostByIdApi(id));
-    setMessage(!error ? "Post successfully deleted" : null);
-    setRender((prev) => !prev);
-    if (error) return false;
-    posts = posts.filter((item) => item.id !== id);
-    return true;
-  };
-
   const elements = posts.map((post) => {
     return (
       <PostCard
@@ -113,9 +98,7 @@ export default function Posts({ posts, isExplore = false }: IPostsProps) {
   });
   return (
     <>
-      <div className={styles.posts} ref={contentRef}>
-        {elements}
-      </div>
+      <div className={styles.posts}> {elements} </div>
       <Info
         loading={loading}
         error={error?.response?.data.message || error?.message}
@@ -123,17 +106,6 @@ export default function Posts({ posts, isExplore = false }: IPostsProps) {
         render={render}
         className={styles.message}
       />
-      <Modal hidden={modalHidden} onClickHandle={closePost} ref={modalRef}>
-        <PostDetail
-          postId={detailedPostId}
-          close={closePost}
-          message={message}
-          sendComment={handleSendComment}
-          likePost={handleLikePost}
-          followUser={handleFollowUser}
-          deletePost={handleDeletePost}
-        />
-      </Modal>
     </>
   );
 }

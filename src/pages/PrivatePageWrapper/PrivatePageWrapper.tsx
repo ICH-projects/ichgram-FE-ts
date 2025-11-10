@@ -6,6 +6,9 @@ import { selectModal } from "../../redux/modal/modal-selectors";
 
 import NavBar from "../../modules/NavBar/NavBar";
 import PostCreateForm from "../../modules/PostCreateForm/PostCreateForm";
+import PostDetail, {
+  type IPostDetailProps,
+} from "../../modules/PostDetail/PostDetail";
 
 import Container from "../../shared/components/Container/Container";
 import Modal from "../../shared/components/Modal/Modal";
@@ -13,7 +16,7 @@ import Modal from "../../shared/components/Modal/Modal";
 import styles from "./PrivatePageWrapper.module.css";
 
 export default function PrivatePageWrapper(): JSX.Element {
-  const { hidden, childType } = useSelector(selectModal);
+  const { hidden, childType, childProps } = useSelector(selectModal);
 
   const contentRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -40,6 +43,9 @@ export default function PrivatePageWrapper(): JSX.Element {
           <Outlet />
           <Modal hidden={hidden} ref={modalRef}>
             {childType === "create" && <PostCreateForm />}
+            {childType === "post_detail" && (
+              <PostDetail {...(childProps as IPostDetailProps)} />
+            )}
             {childType === "notifications" && "notifications"}
             {childType === "search" && "search"}
           </Modal>

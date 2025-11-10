@@ -1,56 +1,48 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import type { Comment, Follow, Like, Post } from "../../../typescript/types";
+import type { Comment, Follow, Like, Post } from "../../typescript/types";
 
-import { selectUser } from "../../../redux/auth/auth-selectors";
+import { type AppDispatch } from "../../redux/store";
+import { hideModal } from "../../redux/modal/modal-slice";
+import { selectUser } from "../../redux/auth/auth-selectors";
 
-import { isUserFollowed } from "../../../shared/utils/user";
+import { isUserFollowed } from "../../shared/utils/user";
 
-import useRequest from "../../../shared/hooks/useRequest";
-import { getPostByIdApi } from "../../../shared/api/post-api";
+import useRequest from "../../shared/hooks/useRequest";
+import { deletePostByIdApi, getPostByIdApi } from "../../shared/api/post-api";
+import { followUserApi } from "../../shared/api/follow-api";
+import { likePostApi } from "../../shared/api/like-api";
+import { createCommentApi } from "../../shared/api/comment-api";
 
-import TextEditor from "../../../shared/components/TextEditor/TextEditor";
-import Info from "../../../shared/components/Info/Info";
-import Dialog from "../../../shared/components/Dialog/Dialog";
+import TextEditor from "../../shared/components/TextEditor/TextEditor";
+import Info from "../../shared/components/Info/Info";
+import Dialog from "../../shared/components/Dialog/Dialog";
 
 import {
   AdditionalIcon,
   LikeIcon,
   CommentIcon,
-} from "../../../shared/components/icons";
-
-import CommentCard from "./CommentCard/CommentCard";
+} from "../../shared/components/icons";
 
 import { fields, defaultValues, commentSchema, type FormData } from "./fields";
+import CommentCard from "./CommentCard/CommentCard";
 
 import styles from "./PostDetail.module.css";
 
 const { VITE_API_URL: baseURL } = import.meta.env;
 
-interface IPostDetailProps {
+export interface IPostDetailProps {
   postId: number | null;
-  close: () => void;
-  message?: string | null;
-  likePost: (like: Like) => Promise<Like>;
-  sendComment: (comment: Comment) => Promise<Comment>;
-  followUser: (follow: Follow) => Promise<Follow>;
-  deletePost: (id: number) => Promise<boolean>;
 }
 
-export default function PostDetail({
-  postId,
-  close,
-  message,
-  sendComment,
-  likePost,
-  followUser,
-  deletePost,
-}: IPostDetailProps) {
+export default function PostDetail({ postId }: IPostDetailProps) {
+  const dispatch = useDispatch<AppDispatch>();
   const [post, setPost] = useState<Post | null>(null);
+  const [message, setMessage] = useState<string | null | undefined>(null);
 
   const { register, handleSubmit } = useForm({
     defaultValues,
@@ -58,12 +50,14 @@ export default function PostDetail({
     mode: "onChange",
   });
 
-  const { loading, error, sendRequest } = useRequest<Post>();
+  const { loading, error, sendRequest } = useRequest<unknown | null>();
   const [render, setRender] = useState(true);
 
   useEffect(() => {
     const fetchData = async (postId: number) => {
-      const post: Post | void = await sendRequest(() => getPostByIdApi(postId));
+      const post: Post = (await sendRequest(() =>
+        getPostByIdApi(postId)
+      )) as Post;
       setPost(post as Post);
     };
 
@@ -74,9 +68,17 @@ export default function PostDetail({
   const [dialogShow, setDialogShow] = useState(false);
   const [reset, setReset] = useState(false);
 
+  const close = () => {
+    dispatch(hideModal());
+  };
+
   const handleSendComment = async (comment: Comment): Promise<void> => {
-    const createdComment = await sendComment(comment);
+    const createdComment: Comment = (await sendRequest(() =>
+      createCommentApi(comment)
+    )) as Comment;
+    if (error) return;
     if (!createdComment) return;
+    setMessage("Comment successfully created");
     setPost((prev) => {
       prev!.totalComments = (prev!.totalComments || 0) + 1;
       if (!prev?.comments) prev!.comments = [];
@@ -89,8 +91,12 @@ export default function PostDetail({
 
   const handleLikePost = async (like: Like) => {
     if (post!.isLiked) return;
-    const createdLike = await likePost(like);
+    const createdLike: Like = (await sendRequest(() =>
+      likePostApi(like)
+    )) as Like;
+    if (error) return;
     if (!createdLike) return;
+    setMessage("Like successfully created");
     setPost((prev) => {
       prev!.totalLikes = (prev!.totalLikes || 0) + 1;
       prev!.isLiked = true;
@@ -101,7 +107,12 @@ export default function PostDetail({
 
   const handleFollowUser = async (follow: Follow) => {
     if (isUserFollowed(post?.user, currentUser)) return;
-    const createdFollow = await followUser(follow);
+    const createdFollow: Follow = (await sendRequest(() =>
+      followUserApi(follow)
+    )) as Follow;
+    if (error) return;
+    if (!createdFollow) return;
+    setMessage("Follow successfully created");
     setPost((prev) => {
       if (prev!.user.id === follow.targetUserId) {
         if (!prev!.user.followers) prev!.user.followers = [];
@@ -112,10 +123,11 @@ export default function PostDetail({
     setRender((prev) => !prev);
   };
 
-  const handleDeletePost = async (id: number) => {
+  const handleDeletePost = async (id: number): Promise<void> => {
     if (post?.user?.id !== currentUser!.id) return;
-    const result: boolean = await deletePost(id);
-    if (!result) return;
+    await sendRequest(() => deletePostByIdApi(id));
+    setMessage(!error ? "Post successfully deleted" : null);
+    if (error) return;
     alert("Post successfully deleted");
     close();
   };

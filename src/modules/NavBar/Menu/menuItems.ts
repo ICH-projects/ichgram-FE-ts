@@ -1,4 +1,4 @@
-export type ChildType = "search" | "notifications" | "create";
+export type ChildType = "search" | "notifications" | "create" | "post_detail";
 
 interface IMenuConfig {
   title: string;
