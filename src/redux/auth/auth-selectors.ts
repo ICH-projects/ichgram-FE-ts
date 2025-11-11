@@ -1,6 +1,4 @@
-import type { Store } from "../root-reducer";
-import type { User } from "../../typescript/types";
-import type { AuthStore } from "./auth-slice";
+import type { AuthStore, Store, User } from "../../typescript/types";
 
 export const selectAuth = (store: Store): AuthStore => store.auth;
 

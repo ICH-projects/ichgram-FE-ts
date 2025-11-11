@@ -2,13 +2,9 @@ import { combineReducers } from "@reduxjs/toolkit";
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
-import authReducer, { type AuthStore } from "./auth/auth-slice";
-import modalReducer, { type ModalStore } from "./modal/modal-slice";
-
-export type Store = {
-  auth: AuthStore;
-  modal: ModalStore;
-};
+import authReducer from "./auth/auth-slice";
+import modalReducer from "./modal/modal-slice";
+import postsReducer from "./posts/posts-slice";
 
 const persistConfig = {
   key: "root",
@@ -20,6 +16,7 @@ const persistedAuthReducer = persistReducer(persistConfig, authReducer);
 const rootReducer = combineReducers({
   auth: persistedAuthReducer,
   modal: modalReducer,
+  posts: postsReducer,
 });
 
 export default rootReducer;

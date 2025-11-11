@@ -6,6 +6,10 @@ export const createPostApi = fetchDecorator<Post>((payload) => {
   return instance.postForm("posts", { ...payload });
 });
 
+export const getLastUpdatedPostsThunkApi = async () => {
+  return await instance.get<Post[]>("posts/updates");
+};
+
 export const getLastUpdatedPostsApi = fetchDecorator<Post[]>(() => {
   return instance.get("posts/updates");
 });

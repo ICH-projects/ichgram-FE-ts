@@ -1,10 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export type ModalStore = {
-  hidden: boolean;
-  childType: string | null;
-  childProps: unknown | null;
-};
+import type { ModalStore } from "../../typescript/types";
 
 const initialModalState: ModalStore = {
   hidden: true,

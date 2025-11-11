@@ -1,9 +1,9 @@
 import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-import type { Post } from "../../typescript/types";
-
-import useRequest from "../../shared/hooks/useRequest";
-import { getLastUpdatedPostsApi } from "../../shared/api/post-api";
+import { type AppDispatch } from "../../redux/store";
+import { selectPosts } from "../../redux/posts/posts-selectors";
+import { getLastUpdatedPosts } from "../../redux/posts/posts-thunks";
 
 import Posts from "../../modules/Posts/Posts";
 import Info from "../../shared/components/Info/Info";
@@ -12,19 +12,17 @@ import { EndIcon } from "../../shared/components/icons";
 import styles from "./HomePage.module.css";
 
 export default function HomePage() {
-  const { state, loading, error, sendRequest } = useRequest<Post[]>();
+  const dispatch = useDispatch<AppDispatch>();
+  const { error, loading, posts, message } = useSelector(selectPosts);
 
   useEffect(() => {
-    sendRequest(getLastUpdatedPostsApi);
-  }, []);
+    dispatch(getLastUpdatedPosts());
+  }, [dispatch]);
 
   return (
     <div className={styles.homePage}>
-      <Info
-        loading={loading}
-        error={error?.response?.data.message || error?.message}
-      />
-      {state && <Posts posts={state} />}
+      <Info loading={loading} error={error} message={message} />
+      {posts.length > 0 && <Posts posts={posts} />}
       <div className={styles.end}>
         <EndIcon className={styles.endIcon} />
         <h1 className={styles.endTitle}>You've seen all the updates</h1>

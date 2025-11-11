@@ -12,7 +12,6 @@ export type User = {
   followers?: Follow[];
 };
 
-
 export type FetchResponse<T> =
   | {
       data: T;
@@ -55,4 +54,30 @@ export type Follow = {
   id: number;
   followerUserId: number;
   targetUserId: number;
+};
+
+export type StoreAsync = {
+  loading: boolean;
+  error: string | null;
+  message: string | null;
+};
+
+export type AuthStore = StoreAsync & {
+  user: User | null;
+};
+
+export type PostsStore = StoreAsync & {
+  posts: Post[];
+};
+
+export type ModalStore = {
+  hidden: boolean;
+  childType: string | null;
+  childProps: unknown | null;
+};
+
+export type Store = {
+  auth: AuthStore;
+  modal: ModalStore;
+  posts: PostsStore;
 };

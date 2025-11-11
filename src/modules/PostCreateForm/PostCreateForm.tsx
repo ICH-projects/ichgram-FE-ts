@@ -38,7 +38,6 @@ export default function PostCreateForm() {
   const { loading, error, sendRequest } = useRequest<Post>();
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    console.log(acceptedFiles);
     setImgSrc(URL.createObjectURL(acceptedFiles[0]));
     setValue(fields.image.name as keyof FormData, acceptedFiles[0]);
   }, []);
