@@ -1,22 +1,2 @@
-.homePage {
-  /* height: 100%;
-  overflow-y: auto; */
-}
 
-.end {
-  padding-block: 2rem 4rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-.endIcon {
-  width: 5.125rem;
-}
-.endTitle {
-  padding-block: 1rem 0.5rem;
-}
-.endText {
-  font-size: 0.75rem;
-  color: var(--color-text-secondary);
-}
+
