@@ -1,9 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AxiosError } from "axios";
 
-import type { Comment, Follow, Like } from "../../typescript/types";
+import type { Comment, Follow, Like, Post } from "../../typescript/types";
 
 import {
+  createPostApi,
   deletePostByIdApi,
   getLastUpdatedPostsApi,
   getPostsApi,
@@ -32,6 +33,21 @@ export const getPosts = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const { data } = await getPostsApi();
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        (error as AxiosError<{ message: string }>).response?.data?.message ||
+          (error as AxiosError).message
+      );
+    }
+  }
+);
+
+export const createPost = createAsyncThunk(
+  "posts/create",
+  async (payload: Post, { rejectWithValue }) => {
+    try {
+      const { data } = await createPostApi(payload);
       return data;
     } catch (error) {
       return rejectWithValue(

@@ -2,15 +2,14 @@ import { useForm } from "react-hook-form";
 import { useCallback, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useDropzone } from "react-dropzone";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import type { Post } from "../../typescript/types";
 
 import type { AppDispatch } from "../../redux/store";
 import { hideModal } from "../../redux/modal/modal-slice";
-
-import useRequest from "../../shared/hooks/useRequest";
-import { createPostApi } from "../../shared/api/post-api";
+import { createPost } from "../../redux/posts/posts-thunks";
+import { selectPostsStore } from "../../redux/posts/posts-selectors";
 
 import { UploadIcon } from "../../shared/components/icons";
 import TextEditor from "../../shared/components/TextEditor/TextEditor";
@@ -19,6 +18,7 @@ import Info from "../../shared/components/Info/Info";
 import { fields, createPostSchema, type FormData } from "./fields";
 
 import styles from "./PostCreateForm.module.css";
+
 
 export default function PostCreateForm() {
   const {
@@ -31,11 +31,10 @@ export default function PostCreateForm() {
     mode: "onChange",
   });
   const dispatch = useDispatch<AppDispatch>();
+  const { error, loading, message } = useSelector(selectPostsStore);
 
   const [imgSrc, setImgSrc] = useState<string | null>();
-  const [message, setMessage] = useState<string | null>(null);
   const [reset, setReset] = useState(false);
-  const { loading, error, sendRequest } = useRequest<Post>();
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setImgSrc(URL.createObjectURL(acceptedFiles[0]));
@@ -48,14 +47,11 @@ export default function PostCreateForm() {
   });
 
   const handleOnSubmit = async (values: unknown) => {
-    await sendRequest(() => createPostApi(values));
-    if (!error) setMessage("Post successfully created. Form will closed");
+    dispatch(createPost(values as Post));
     setReset((prev) => !prev);
     setValue(fields.image.name as keyof FormData, {});
     setImgSrc(null);
-    setTimeout(() => {
-      dispatch(hideModal());
-    }, 2000);
+    dispatch(hideModal());
   };
 
   return (
@@ -109,11 +105,7 @@ export default function PostCreateForm() {
           />
         </div>
         <div className={styles.messageWrapper}>
-          <Info
-            loading={loading}
-            error={error?.response?.data.message || error?.message}
-            message={`${message}`}
-          />
+          <Info loading={loading} error={error} message={`${message}`} />
           <Info
             error={
               (errors as unknown as { image?: { message?: string } }).image

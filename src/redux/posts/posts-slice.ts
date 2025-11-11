@@ -9,6 +9,7 @@ import {
   followUser,
   deletePost,
   getPosts,
+  createPost,
 } from "./posts-thunks";
 
 import type { PostsStore } from "../../typescript/types";
@@ -47,6 +48,16 @@ const postsSlice = createSlice({
         rejected(store, { payload });
       })
 
+      .addCase(createPost.pending, pending)
+      .addCase(createPost.fulfilled, (store, { payload }) => {
+        store.loading = false;
+        if (!payload) return;
+        store.posts.unshift(payload);
+        store.message = "Post successfully created";
+      })
+      .addCase(createPost.rejected, (store, { payload }) => {
+        rejected(store, { payload });
+      })
 
       .addCase(addComment.pending, pending)
       .addCase(addComment.fulfilled, (store, { payload }) => {
