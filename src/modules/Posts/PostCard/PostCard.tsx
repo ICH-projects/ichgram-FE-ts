@@ -24,9 +24,9 @@ const { VITE_API_URL: baseURL } = import.meta.env;
 interface IPostCardProps {
   className?: string;
   post: Post;
-  likePost: (like: Like) => Promise<Like>;
-  sendComment: (comment: Comment) => Promise<Comment>;
-  followUser: (follow: Follow) => Promise<Follow>;
+  likePost: (like: Like) => Promise<void>;
+  sendComment: (comment: Comment) => Promise<void>;
+  followUser: (follow: Follow) => Promise<void>;
   showPost: (postId: number) => void;
   detailed?: boolean;
 }
