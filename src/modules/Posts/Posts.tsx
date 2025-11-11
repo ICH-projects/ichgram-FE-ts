@@ -16,12 +16,10 @@ import styles from "./Posts.module.css";
 
 interface IPostsProps {
   posts: Post[];
-  isExplore?: boolean;
 }
 
-export default function Posts({ posts, isExplore = false }: IPostsProps) {
+export default function Posts({ posts }: IPostsProps) {
   const dispatch = useDispatch<AppDispatch>();
-
 
   const showPost = (postId: number) => {
     dispatch(
@@ -55,7 +53,6 @@ export default function Posts({ posts, isExplore = false }: IPostsProps) {
         likePost={handleLikePost}
         followUser={handleFollowUser}
         showPost={showPost}
-        detailed={!isExplore}
       />
     );
   });

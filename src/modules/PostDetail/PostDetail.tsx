@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -9,14 +9,15 @@ import type { Comment, Follow, Like, Post } from "../../typescript/types";
 import { type AppDispatch } from "../../redux/store";
 import { hideModal } from "../../redux/modal/modal-slice";
 import { selectUser } from "../../redux/auth/auth-selectors";
+import { selectPostsStore } from "../../redux/posts/posts-selectors";
+import {
+  addComment,
+  likePost,
+  followUser,
+  deletePost,
+} from "../../redux/posts/posts-thunks";
 
 import { isUserFollowed } from "../../shared/utils/user";
-
-import useRequest from "../../shared/hooks/useRequest";
-import { deletePostByIdApi, getPostByIdApi } from "../../shared/api/post-api";
-import { followUserApi } from "../../shared/api/follow-api";
-import { likePostApi } from "../../shared/api/like-api";
-import { createCommentApi } from "../../shared/api/comment-api";
 
 import TextEditor from "../../shared/components/TextEditor/TextEditor";
 import Info from "../../shared/components/Info/Info";
@@ -36,33 +37,20 @@ import styles from "./PostDetail.module.css";
 const { VITE_API_URL: baseURL } = import.meta.env;
 
 export interface IPostDetailProps {
-  postId: number | null;
+  postId: number;
 }
 
 export default function PostDetail({ postId }: IPostDetailProps) {
   const dispatch = useDispatch<AppDispatch>();
-  const [post, setPost] = useState<Post | null>(null);
-  const [message, setMessage] = useState<string | null | undefined>(null);
+
+  const { posts, error, loading, message } = useSelector(selectPostsStore);
+  const post: Post | undefined = posts.find((p) => p.id === postId);
 
   const { register, handleSubmit } = useForm({
     defaultValues,
     resolver: yupResolver(commentSchema),
     mode: "onChange",
   });
-
-  const { loading, error, sendRequest } = useRequest<unknown | null>();
-  const [render, setRender] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async (postId: number) => {
-      const post: Post = (await sendRequest(() =>
-        getPostByIdApi(postId)
-      )) as Post;
-      setPost(post as Post);
-    };
-
-    if (postId) fetchData(postId);
-  }, [postId]);
 
   const currentUser = useSelector(selectUser);
   const [dialogShow, setDialogShow] = useState(false);
@@ -73,62 +61,20 @@ export default function PostDetail({ postId }: IPostDetailProps) {
   };
 
   const handleSendComment = async (comment: Comment): Promise<void> => {
-    const createdComment: Comment = (await sendRequest(() =>
-      createCommentApi(comment)
-    )) as Comment;
-    if (error) return;
-    if (!createdComment) return;
-    setMessage("Comment successfully created");
-    setPost((prev) => {
-      prev!.totalComments = (prev!.totalComments || 0) + 1;
-      if (!prev?.comments) prev!.comments = [];
-      prev!.comments.unshift(createdComment as Comment);
-      return prev;
-    });
+    dispatch(addComment(comment));
     setReset((prev) => !prev);
-    setRender((prev) => !prev);
   };
 
   const handleLikePost = async (like: Like) => {
-    if (post!.isLiked) return;
-    const createdLike: Like = (await sendRequest(() =>
-      likePostApi(like)
-    )) as Like;
-    if (error) return;
-    if (!createdLike) return;
-    setMessage("Like successfully created");
-    setPost((prev) => {
-      prev!.totalLikes = (prev!.totalLikes || 0) + 1;
-      prev!.isLiked = true;
-      return prev;
-    });
-    setRender((prev) => !prev);
+    dispatch(likePost(like));
   };
 
   const handleFollowUser = async (follow: Follow) => {
-    if (isUserFollowed(post?.user, currentUser)) return;
-    const createdFollow: Follow = (await sendRequest(() =>
-      followUserApi(follow)
-    )) as Follow;
-    if (error) return;
-    if (!createdFollow) return;
-    setMessage("Follow successfully created");
-    setPost((prev) => {
-      if (prev!.user.id === follow.targetUserId) {
-        if (!prev!.user.followers) prev!.user.followers = [];
-        prev!.user.followers.push(createdFollow);
-      }
-      return prev;
-    });
-    setRender((prev) => !prev);
+    dispatch(followUser(follow));
   };
 
   const handleDeletePost = async (id: number): Promise<void> => {
-    if (post?.user?.id !== currentUser!.id) return;
-    await sendRequest(() => deletePostByIdApi(id));
-    setMessage(!error ? "Post successfully deleted" : null);
-    if (error) return;
-    alert("Post successfully deleted");
+    dispatch(deletePost(id));
     close();
   };
 
@@ -228,10 +174,9 @@ export default function PostDetail({ postId }: IPostDetailProps) {
           </button>
         </form>
         <Info
-          error={error?.response?.data.message || error?.message}
+          error={error}
           loading={loading}
           message={message}
-          render={render}
         />
       </div>
       {dialogShow && (

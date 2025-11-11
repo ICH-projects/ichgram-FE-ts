@@ -7,6 +7,7 @@ import {
   getLastUpdatedPosts,
   addComment,
   followUser,
+  deletePost,
 } from "./posts-thunks";
 
 import type { PostsStore } from "../../typescript/types";
@@ -72,6 +73,16 @@ const postsSlice = createSlice({
         store.message = "Follow successfully created";
       })
       .addCase(followUser.rejected, (store, { payload }) => {
+        rejected(store, { payload });
+      })
+
+      .addCase(deletePost.pending, pending)
+      .addCase(deletePost.fulfilled, (store, { payload }) => {
+        store.loading = false;
+        store.posts = store.posts.filter((p) => p.id !== payload);
+        store.message = "Post successfully deleted";
+      })
+      .addCase(deletePost.rejected, (store, { payload }) => {
         rejected(store, { payload });
       });
   },
