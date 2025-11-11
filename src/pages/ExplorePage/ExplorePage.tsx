@@ -1,31 +1,29 @@
 import { useEffect } from "react";
 
-import type { Post } from "../../typescript/types";
 
-// import Explore from "/src/modules/Explore/Explore";
-import Posts from "../../modules/Posts/Posts";
+import Explore from "../../modules/Explore/Explore";
+// import Posts from "../../modules/Posts/Posts";
 import Info from "../../shared/components/Info/Info";
 
-import { getPostsApi } from "../../shared/api/post-api";
-import useRequest from "../../shared/hooks/useRequest";
 
 import styles from "./ExplorePage.module.css";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch } from "../../redux/store";
+import { selectPostsStore } from "../../redux/posts/posts-selectors";
+import { getPosts } from "../../redux/posts/posts-thunks";
 
 export default function ExplorePage() {
-  const { state, loading, error, sendRequest } = useRequest<Post[]>();
+  const dispatch = useDispatch<AppDispatch>();
+  const { error, loading, posts, message } = useSelector(selectPostsStore);
 
   useEffect(() => {
-    sendRequest(getPostsApi);
-  }, []);
+    dispatch(getPosts());
+  }, [dispatch]);
 
   return (
     <div className={styles.explorePage}>
-      {/* {state && <Explore posts={state} />} */}
-      {state && <Posts posts={state} isExplore={true}/>}
-      <Info
-        error={error?.response?.data.message || error?.message}
-        loading={loading}
-      />
+      <Info error={error} loading={loading} message={message} />
+      {posts && posts.length > 0 && <Explore posts={posts} />}
     </div>
   );
 }

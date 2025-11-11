@@ -3,16 +3,35 @@ import { AxiosError } from "axios";
 
 import type { Comment, Follow, Like } from "../../typescript/types";
 
-import { deletePostByIdApi, getLastUpdatedPostsApi } from "../../shared/api/post-api";
+import {
+  deletePostByIdApi,
+  getLastUpdatedPostsApi,
+  getPostsApi,
+} from "../../shared/api/post-api";
 import { addCommentApi } from "../../shared/api/comment-api";
-import { likePostApiThunk } from "../../shared/api/like-api";
-import { followUserApiThunk } from "../../shared/api/follow-api";
+import { likePostApi } from "../../shared/api/like-api";
+import { followUserApi } from "../../shared/api/follow-api";
 
 export const getLastUpdatedPosts = createAsyncThunk(
   "posts/getUpdates",
   async (_, { rejectWithValue }) => {
     try {
       const { data } = await getLastUpdatedPostsApi();
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        (error as AxiosError<{ message: string }>).response?.data?.message ||
+          (error as AxiosError).message
+      );
+    }
+  }
+);
+
+export const getPosts = createAsyncThunk(
+  "posts/explore",
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await getPostsApi();
       return data;
     } catch (error) {
       return rejectWithValue(
@@ -42,7 +61,7 @@ export const likePost = createAsyncThunk(
   "posts/like",
   async (payload: Like, { rejectWithValue }) => {
     try {
-      const { data } = await likePostApiThunk(payload);
+      const { data } = await likePostApi(payload);
       return data;
     } catch (error) {
       return rejectWithValue(
@@ -57,7 +76,7 @@ export const followUser = createAsyncThunk(
   "posts/follow_user",
   async (payload: Follow, { rejectWithValue }) => {
     try {
-      const { data } = await followUserApiThunk(payload);
+      const { data } = await followUserApi(payload);
       return data;
     } catch (error) {
       return rejectWithValue(
@@ -67,7 +86,6 @@ export const followUser = createAsyncThunk(
     }
   }
 );
-
 
 export const deletePost = createAsyncThunk(
   "posts/delete",
