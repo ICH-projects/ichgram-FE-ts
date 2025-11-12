@@ -56,6 +56,18 @@ export type Follow = {
   targetUserId: number;
 };
 
+export type Notification = {
+  id: number;
+  authorUserId: number;
+  type: "LIKED" | "COMMENTED" | "FOLLOWED";
+  targetUserId: number;
+  targetPostId: number;
+  isViewed: boolean;
+  authorUser: User;
+  updatedAt: Date;
+  targetPost: Post;
+};
+
 export type StoreAsync = {
   loading: boolean;
   error: string | null;
@@ -70,6 +82,10 @@ export type PostsStore = StoreAsync & {
   posts: Post[];
 };
 
+export type NotificationsStore = StoreAsync & {
+  notifications: Notification[];
+};
+
 export type ModalStore = {
   hidden: boolean;
   childType: string | null;
@@ -80,4 +96,5 @@ export type Store = {
   auth: AuthStore;
   modal: ModalStore;
   posts: PostsStore;
+  notifications: NotificationsStore;
 };

@@ -1,8 +1,8 @@
 import { DateTime } from "luxon";
 
-export const toNotificationFormat = (date: Date) => {
+export const toNotificationFormat = (date: string) => {
   const nowDate = DateTime.now();
-  const inputDate = DateTime.fromJSDate(date);
+  const inputDate = DateTime.fromISO(date);
   const diff = nowDate.diff(inputDate);
   let result;
   if (diff.as("years") > 1) {

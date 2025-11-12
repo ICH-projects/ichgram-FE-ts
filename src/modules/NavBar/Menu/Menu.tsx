@@ -1,4 +1,9 @@
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+
+import { selectNotificationCount } from "../../../redux/notifications/notifications-selectors";
+
+import Badge from "../../../shared/components/Badge/Badge";
 
 import menuItems, { type ChildType } from "./menuItems";
 
@@ -17,6 +22,8 @@ export default function Menu({
 }: IMenuProps) {
   const fullClassName = `${styles.menu} ${className} ${styles[variant]}`;
 
+  const notificationCount = useSelector(selectNotificationCount);
+
   const elements = menuItems.map(({ title, icon, link, childType }) => {
     return (
       <li
@@ -27,6 +34,9 @@ export default function Menu({
         <Link to={link || ""} className={styles.link}>
           <img src={`/src/assets/icons/${icon}.svg`} className={styles.icon} />
           <p className={styles.title}>{title}</p>
+          {childType === "notifications" && notificationCount > 0 && (
+            <Badge value={notificationCount} />
+          )}
         </Link>
       </li>
     );

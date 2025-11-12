@@ -1,0 +1,49 @@
+.card {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.avatarWrapper {
+  width: 3rem;
+  height: 3rem;
+}
+.avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+
+  object-fit: cover;
+}
+
+.wrapper {
+  display: flex;
+  gap: 1rem;
+}
+.username {
+  text-decoration: none;
+  color: var(--color-text-primary);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.action {
+  font-size: 0.8rem;
+  font-weight: 400;
+}
+.date {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--color-text-secondary);
+}
+
+.photoWrapper {
+  width: 3rem;
+  height: 3rem;
+}
+.photo {
+  border-radius: 0.5rem;
+
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
