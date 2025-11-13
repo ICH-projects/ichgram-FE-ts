@@ -1,5 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+import { mergeArraysDistinct } from "../../shared/utils/arrays";
+
 import { pending, rejected } from "../../shared/utils/redux";
 
 import {
@@ -29,7 +31,7 @@ const postsSlice = createSlice({
       .addCase(getLastUpdatedPosts.pending, pending)
       .addCase(getLastUpdatedPosts.fulfilled, (store, { payload }) => {
         store.loading = false;
-        store.posts = payload;
+        store.posts = mergeArraysDistinct(store.posts, payload);
         store.message = "Request successfully processed";
       })
       .addCase(getLastUpdatedPosts.rejected, (store, { payload }) => {
@@ -40,7 +42,7 @@ const postsSlice = createSlice({
       .addCase(getPosts.pending, pending)
       .addCase(getPosts.fulfilled, (store, { payload }) => {
         store.loading = false;
-        store.posts = payload;
+        store.posts = mergeArraysDistinct(store.posts, payload);
         store.message = "Request successfully processed";
       })
       .addCase(getPosts.rejected, (store, { payload }) => {
