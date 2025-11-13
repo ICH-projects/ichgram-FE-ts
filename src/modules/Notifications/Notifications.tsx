@@ -25,7 +25,7 @@ export default function Notifications() {
     selectNotificationsStore
   );
 
-  const showPost = (postId: number, notificationId: number): void => {
+  const showPost = (postId: number): void => {
     dispatch(
       showModal({
         childType: "post_detail",
@@ -34,6 +34,9 @@ export default function Notifications() {
         },
       })
     );
+  };
+
+  const markAsReadHandler = (notificationId: number) => {
     dispatch(markAsRead(notificationId));
   };
 
@@ -47,6 +50,7 @@ export default function Notifications() {
       notification={notification}
       currentUser={currentUser!}
       showPost={showPost}
+      markAsRead={markAsReadHandler}
     />
   ));
 
@@ -59,7 +63,10 @@ export default function Notifications() {
     >
       <h1 className={styles.title}>
         Notifications
-        <div title="Mark all notifications as read" onClick={markAllAsReadHandler}>
+        <div
+          title="Mark all notifications as read"
+          onClick={markAllAsReadHandler}
+        >
           <MarkAsReadIcon className={styles.markAsReadIcon} />
         </div>
       </h1>

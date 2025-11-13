@@ -8,34 +8,31 @@ import styles from "./NotificationCard.module.css";
 
 const { VITE_API_URL: baseURL } = import.meta.env;
 
+const actions = {
+  LIKED: "liked your post",
+  COMMENTED: "commented your post",
+  FOLLOWED: "started following",
+};
+
 interface INotificationCardProps {
   notification: Notification;
   currentUser: User;
-  showPost?: (postId: number, notificationId: number) => void;
+  showPost?: (postId: number) => void;
+  markAsRead?: (notificationId: number) => void;
 }
 
 export default function NotificationCard({
   notification,
   currentUser,
   showPost = () => {},
+  markAsRead = () => {},
 }: INotificationCardProps) {
-  let action = "";
-  switch (notification.type) {
-    case "LIKED":
-      action = "liked your post";
-      break;
-    case "COMMENTED":
-      action = "commented your post";
-      break;
-    case "FOLLOWED":
-      action = "started following";
-      break;
-    default:
-      break;
-  }
+  const onClickHandler = () => {
+    markAsRead(notification.id);
+  };
 
   return (
-    <div className={styles.card}>
+    <div className={styles.card} onClick={onClickHandler}>
       <div className={styles.wrapper}>
         <Link
           to={`/profile/${notification.authorUser.id}`}
@@ -56,7 +53,7 @@ export default function NotificationCard({
               ? "You"
               : notification.authorUser.username}
           </Link>{" "}
-          <span className={styles.action}>{action}</span>
+          <span className={styles.action}>{actions[notification.type]}</span>
           {". "}
           <span className={styles.date}>
             {toNotificationFormat(notification.updatedAt as unknown as string)}
@@ -66,9 +63,8 @@ export default function NotificationCard({
 
       {notification.type !== "FOLLOWED" && (
         <div
-          // to={`/posts/${notification.targetPost?.id}`}
           className={styles.photoWrapper}
-          onClick={() => showPost(notification.targetPost?.id, notification.id)}
+          onClick={() => showPost(notification.targetPost?.id)}
         >
           <img
             src={`${baseURL}/${notification.targetPost?.image}`}
