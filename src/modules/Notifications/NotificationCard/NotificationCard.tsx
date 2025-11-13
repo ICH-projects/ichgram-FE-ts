@@ -11,11 +11,13 @@ const { VITE_API_URL: baseURL } = import.meta.env;
 interface INotificationCardProps {
   notification: Notification;
   currentUser: User;
+  showPost?: (postId: number, notificationId: number) => void;
 }
 
 export default function NotificationCard({
   notification,
   currentUser,
+  showPost = () => {},
 }: INotificationCardProps) {
   let action = "";
   switch (notification.type) {
@@ -63,16 +65,17 @@ export default function NotificationCard({
       </div>
 
       {notification.type !== "FOLLOWED" && (
-        <Link
-          to={`/posts/${notification.targetPost?.id}`}
+        <div
+          // to={`/posts/${notification.targetPost?.id}`}
           className={styles.photoWrapper}
+          onClick={() => showPost(notification.targetPost?.id, notification.id)}
         >
           <img
             src={`${baseURL}/${notification.targetPost?.image}`}
             alt=""
             className={styles.photo}
           />
-        </Link>
+        </div>
       )}
     </div>
   );

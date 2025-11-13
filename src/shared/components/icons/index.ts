@@ -12,3 +12,4 @@ export { default as LikeIcon } from "./LikeIcon";
 export { default as EndIcon } from "./EndIcon";
 export { default as AdditionalIcon } from "./AdditionalIcon";
 export { default as UploadIcon } from "./UploadIcon";
+export { default as MarkAsReadIcon } from "./MarkAsReadIcon";

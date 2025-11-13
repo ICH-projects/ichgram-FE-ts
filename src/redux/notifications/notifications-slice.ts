@@ -2,7 +2,11 @@ import { createSlice } from "@reduxjs/toolkit";
 
 import { pending, rejected } from "../../shared/utils/redux";
 
-import { getNotifications } from "./notifications-thunks";
+import {
+  getNotifications,
+  markAllAsRead,
+  markAsRead,
+} from "./notifications-thunks";
 
 import type { NotificationsStore } from "../../typescript/types";
 
@@ -14,7 +18,7 @@ const initialState: NotificationsStore = {
 };
 
 const notificationsSlice = createSlice({
-  name: "posts",
+  name: "notifications",
   initialState,
   extraReducers: (builder) => {
     builder
@@ -25,7 +29,31 @@ const notificationsSlice = createSlice({
         store.message = "Request successfully processed";
       })
       .addCase(getNotifications.rejected, (store, { payload }) => {
-        store.notifications = [];
+        store.notifications = initialState.notifications;
+        rejected(store, { payload });
+      })
+
+      .addCase(markAsRead.pending, pending)
+      .addCase(markAsRead.fulfilled, (store, { payload }) => {
+        store.loading = false;
+        store.notifications = store.notifications.filter(
+          (n) => n.id !== payload
+        );
+        store.message = "Request successfully processed";
+      })
+      .addCase(markAsRead.rejected, (store, { payload }) => {
+        store.notifications = initialState.notifications;
+        rejected(store, { payload });
+      })
+
+      .addCase(markAllAsRead.pending, pending)
+      .addCase(markAllAsRead.fulfilled, (store) => {
+        store.loading = false;
+        store.notifications = initialState.notifications;
+        store.message = "Request successfully processed";
+      })
+      .addCase(markAllAsRead.rejected, (store, { payload }) => {
+        store.notifications = initialState.notifications;
         rejected(store, { payload });
       });
   },
