@@ -38,9 +38,12 @@ const searchSlice = createSlice({
     removeRecent: (store, { payload }) => {
       store.recent = store.recent.filter((u) => u.id !== payload);
     },
+    clearResult: (store) => {
+      store.result = initialState.result;
+    },
   },
 });
 
-export const { addRecent, removeRecent } = searchSlice.actions;
+export const { addRecent, removeRecent, clearResult } = searchSlice.actions;
 
 export default searchSlice.reducer;
