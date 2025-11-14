@@ -86,6 +86,11 @@ export type NotificationsStore = StoreAsync & {
   notifications: Notification[];
 };
 
+export type SearchStore = StoreAsync & {
+  result: User[];
+  recent: User[];
+};
+
 export type ModalStore = {
   hidden: boolean;
   childType: string | null;
@@ -97,4 +102,5 @@ export type Store = {
   modal: ModalStore;
   posts: PostsStore;
   notifications: NotificationsStore;
+  search: SearchStore;
 };

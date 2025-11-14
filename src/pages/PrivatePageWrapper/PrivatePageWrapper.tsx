@@ -12,6 +12,7 @@ import PostDetail, {
   type IPostDetailProps,
 } from "../../modules/PostDetail/PostDetail";
 import Notifications from "../../modules/Notifications/Notifications";
+import Search from "../../modules/Search/Search";
 
 import Container from "../../shared/components/Container/Container";
 import Modal from "../../shared/components/Modal/Modal";
@@ -60,7 +61,7 @@ export default function PrivatePageWrapper(): JSX.Element {
               <PostDetail {...(childProps as IPostDetailProps)} />
             )}
             {childType === "notifications" && <Notifications />}
-            {childType === "search" && "search"}
+            {childType === "search" && <Search />}
           </Modal>
         </div>
         <div className={styles.footer}>footer</div>

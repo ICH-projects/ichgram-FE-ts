@@ -1,4 +1,4 @@
-// export { default as ClosedIcon } from "./ClosedIcon";
+export { default as ClosedIcon } from "./ClosedIcon";
 export { default as CommentIcon } from "./CommentIcon";
 // export { default as CreateIcon } from "./CreateIcon";
 // export { default as ExploreIcon } from "./ExploreIcon";

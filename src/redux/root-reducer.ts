@@ -6,6 +6,7 @@ import authReducer from "./auth/auth-slice";
 import modalReducer from "./modal/modal-slice";
 import postsReducer from "./posts/posts-slice";
 import notificationsReducer from "./notifications/notifications-slice";
+import searchReducer from "./search/search-slice";
 
 const persistConfig = {
   key: "root",
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
   modal: modalReducer,
   posts: postsReducer,
   notifications: notificationsReducer,
+  search: searchReducer,
 });
 
 export default rootReducer;
