@@ -52,7 +52,7 @@ export default function Messenger(): ReactNode {
     reset();
   };
 
-  const messageElements = activeChat.messages.map((message: Message) => (
+  const messageElements = activeChat.messages?.map((message: Message) => (
     <MessageCard
       key={message.id}
       message={message}
