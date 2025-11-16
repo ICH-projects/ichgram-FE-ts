@@ -7,6 +7,7 @@ import modalReducer from "./modal/modal-slice";
 import postsReducer from "./posts/posts-slice";
 import notificationsReducer from "./notifications/notifications-slice";
 import searchReducer from "./search/search-slice";
+import chatsReducer from "./chat/chat-slice";
 
 const persistConfig = {
   key: "root",
@@ -21,6 +22,7 @@ const rootReducer = combineReducers({
   posts: postsReducer,
   notifications: notificationsReducer,
   search: searchReducer,
+  chats: chatsReducer,
 });
 
 export default rootReducer;

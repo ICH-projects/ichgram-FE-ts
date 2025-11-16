@@ -68,6 +68,23 @@ export type Notification = {
   targetPost: Post;
 };
 
+export type Chat = {
+  id: number;
+  member1Id: number;
+  member2Id: number;
+  member1: User;
+  member2: User;
+  messages: Message[];
+};
+
+export type Message = {
+  id: number;
+  chatId: number;
+  authorId: number;
+  text: string;
+  author: User;
+};
+
 export type StoreAsync = {
   loading: boolean;
   error: string | null;
@@ -91,6 +108,11 @@ export type SearchStore = StoreAsync & {
   recent: User[];
 };
 
+export type ChatsStore = StoreAsync & {
+  chats: Chat[];
+  activeChat: Chat | null;
+};
+
 export type ModalStore = {
   hidden: boolean;
   childType: string | null;
@@ -103,4 +125,5 @@ export type Store = {
   posts: PostsStore;
   notifications: NotificationsStore;
   search: SearchStore;
+  chats: ChatsStore;
 };

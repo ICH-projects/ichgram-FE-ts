@@ -1,5 +1,5 @@
 import { io, Socket } from "socket.io-client";
-import { addNotificationsListener } from "./listeners";
+import { addMessagesListener, addNotificationsListener } from "./listeners";
 
 const { VITE_WEBSOCKET_URL: socketURL } = import.meta.env;
 
@@ -19,6 +19,7 @@ export const AppSocket = (function () {
       _instance = null;
     });
     addNotificationsListener(socket);
+    addMessagesListener(socket);
 
     return socket;
   }
