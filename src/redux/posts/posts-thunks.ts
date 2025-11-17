@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AxiosError } from "axios";
 
-import type { Comment, Follow, Like, Post } from "../../typescript/types";
+import type { Comment,  Like, Post } from "../../typescript/types";
 
 import {
   createPostApi,
@@ -11,7 +11,7 @@ import {
 } from "../../shared/api/post-api";
 import { addCommentApi } from "../../shared/api/comment-api";
 import { likePostApi } from "../../shared/api/like-api";
-import { followUserApi } from "../../shared/api/follow-api";
+// import { followUserApi } from "../../shared/api/follow-api";
 
 export const getLastUpdatedPosts = createAsyncThunk(
   "posts/getUpdates",
@@ -88,20 +88,20 @@ export const likePost = createAsyncThunk(
   }
 );
 
-export const followUser = createAsyncThunk(
-  "posts/follow_user",
-  async (payload: Follow, { rejectWithValue }) => {
-    try {
-      const { data } = await followUserApi(payload);
-      return data;
-    } catch (error) {
-      return rejectWithValue(
-        (error as AxiosError<{ message: string }>).response?.data?.message ||
-          (error as AxiosError).message
-      );
-    }
-  }
-);
+// export const followUser = createAsyncThunk(
+//   "posts/follow_user",
+//   async (payload: Follow, { rejectWithValue }) => {
+//     try {
+//       const { data } = await followUserApi(payload);
+//       return data;
+//     } catch (error) {
+//       return rejectWithValue(
+//         (error as AxiosError<{ message: string }>).response?.data?.message ||
+//           (error as AxiosError).message
+//       );
+//     }
+//   }
+// );
 
 export const deletePost = createAsyncThunk(
   "posts/delete",

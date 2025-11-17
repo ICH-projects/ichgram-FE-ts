@@ -8,11 +8,11 @@ import {
   likePost,
   getLastUpdatedPosts,
   addComment,
-  followUser,
   deletePost,
   getPosts,
   createPost,
 } from "./posts-thunks";
+import { subscribeToProfile } from "../profile/profile-thunks";
 
 import type { PostsStore } from "../../typescript/types";
 
@@ -88,8 +88,8 @@ const postsSlice = createSlice({
         rejected(store, { payload });
       })
 
-      .addCase(followUser.pending, pending)
-      .addCase(followUser.fulfilled, (store, { payload }) => {
+      .addCase(subscribeToProfile.pending, pending)
+      .addCase(subscribeToProfile.fulfilled, (store, { payload }) => {
         store.loading = false;
         store.posts.map((post) => {
           if (post.user.id === payload.targetUserId)
@@ -98,7 +98,7 @@ const postsSlice = createSlice({
         });
         store.message = "Follow successfully created";
       })
-      .addCase(followUser.rejected, (store, { payload }) => {
+      .addCase(subscribeToProfile.rejected, (store, { payload }) => {
         rejected(store, { payload });
       })
 

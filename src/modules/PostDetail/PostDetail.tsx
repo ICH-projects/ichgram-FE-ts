@@ -13,9 +13,9 @@ import { selectPostsStore } from "../../redux/posts/posts-selectors";
 import {
   addComment,
   likePost,
-  followUser,
   deletePost,
 } from "../../redux/posts/posts-thunks";
+import { subscribeToProfile } from "../../redux/profile/profile-thunks";
 
 import { isUserFollowed } from "../../shared/utils/user";
 
@@ -70,7 +70,7 @@ export default function PostDetail({ postId }: IPostDetailProps) {
   };
 
   const handleFollowUser = async (follow: Follow) => {
-    dispatch(followUser(follow));
+    dispatch(subscribeToProfile(follow));
   };
 
   const handleDeletePost = async (id: number): Promise<void> => {
@@ -173,11 +173,7 @@ export default function PostDetail({ postId }: IPostDetailProps) {
             Send
           </button>
         </form>
-        <Info
-          error={error}
-          loading={loading}
-          message={message}
-        />
+        <Info error={error} loading={loading} message={message} />
       </div>
       {dialogShow && (
         <Dialog

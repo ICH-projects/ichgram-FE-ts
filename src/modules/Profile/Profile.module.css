@@ -1,0 +1,77 @@
+.profile {
+  padding-block: 2.5rem;
+  padding-inline: 6rem;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: 1fr 3fr 0.5fr;
+  gap: 6rem;
+}
+
+.avatarWrapper{
+  width: 150px;
+  height: 150px;
+}
+.avatar{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  /* aspect-ratio: 1/1; */
+}
+
+.infoWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.titleWrapper {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+.username {
+  text-decoration: none;
+  font-size: 1.25rem;
+  color: var(--color-text-primary);
+}
+.btnFollow {
+  border-radius: 0.5rem;
+  font-size: 14px;
+  padding: 0.5rem 3rem;
+}
+.btnMessage {
+  text-decoration: none;
+  color: var(--color-text-primary);
+  border-radius: 0.5rem;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 0.5rem 4rem;
+  border: none;
+  background-color: var(--color-background-button-secondary);
+}
+
+.statsWrapper {
+  display: flex;
+  justify-content: space-between;
+  gap: 2.5rem;
+}
+.statsValue {
+  font-weight: 600;
+}
+
+.about {
+  font-size: 0.8rem;
+}
+
+.link {
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-link-primary);
+}
+.link:visited {
+  color: var(--color-link-visited);
+}

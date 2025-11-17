@@ -8,6 +8,7 @@ import postsReducer from "./posts/posts-slice";
 import notificationsReducer from "./notifications/notifications-slice";
 import searchReducer from "./search/search-slice";
 import chatsReducer from "./chat/chat-slice";
+import profileReducer from "./profile/profile-slice";
 
 const persistConfig = {
   key: "root",
@@ -23,6 +24,7 @@ const rootReducer = combineReducers({
   notifications: notificationsReducer,
   search: searchReducer,
   chats: chatsReducer,
+  profile: profileReducer,
 });
 
 export default rootReducer;

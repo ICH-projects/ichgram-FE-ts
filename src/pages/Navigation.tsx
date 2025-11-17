@@ -11,8 +11,9 @@ import AuthLoginPage from "./AuthLoginPage/AuthLoginPage";
 // import AuthConfirmPage from "/src/pages/AuthConfirmPage/AuthConfirmPage";
 
 import HomePage from "./HomePage/HomePage";
-import ExplorePage from "./ExplorePage/ExplorePage.js";
-import ChatPage from "./ChatPage/ChatPage.js";
+import ExplorePage from "./ExplorePage/ExplorePage";
+import ChatPage from "./ChatPage/ChatPage";
+import ProfilePage from "./ProfilePage/ProfilePage";
 
 import PublicRoute from "../routes/PublicRoute.js";
 import PrivateRoute from "../routes/PrivateRoute.js";
@@ -26,7 +27,7 @@ export default function Navigation() {
           <Route path="explore" element={<ExplorePage />} />
           <Route path="messages" element={<ChatPage />} />
           <Route path="messages/:member2Id" element={<ChatPage />} />
-          {/* <Route path="/profile/:id" element={<ProfilePage />} /> */}
+          <Route path="profile/:id" element={<ProfilePage />} />
           {/* <Route path="/profile/:id/edit" element={<ProfileEditPage />} /> */}
         </Route>
       </Route>

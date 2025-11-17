@@ -10,6 +10,10 @@ export type User = {
   avatar?: string;
   password?: string;
   followers?: Follow[];
+  isFollowed?: boolean;
+  totalPosts?: number;
+  totalFollowers?: number;
+  totalFollows?: number;
 };
 
 export type FetchResponse<T> =
@@ -95,6 +99,10 @@ export type AuthStore = StoreAsync & {
   user: User | null;
 };
 
+export type ProfileStore = StoreAsync & {
+  profile: (User & { posts: Post[] }) | null;
+};
+
 export type PostsStore = StoreAsync & {
   posts: Post[];
 };
@@ -126,4 +134,5 @@ export type Store = {
   notifications: NotificationsStore;
   search: SearchStore;
   chats: ChatsStore;
+  profile: ProfileStore;
 };

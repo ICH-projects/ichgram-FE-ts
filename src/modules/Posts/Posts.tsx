@@ -4,11 +4,8 @@ import type { Comment, Follow, Like, Post } from "../../typescript/types";
 
 import { type AppDispatch } from "../../redux/store";
 import { showModal } from "../../redux/modal/modal-slice";
-import {
-  addComment,
-  followUser,
-  likePost,
-} from "../../redux/posts/posts-thunks";
+import { addComment, likePost } from "../../redux/posts/posts-thunks";
+import { subscribeToProfile } from "../../redux/profile/profile-thunks";
 
 import PostCard from "./PostCard/PostCard";
 
@@ -41,7 +38,7 @@ export default function Posts({ posts }: IPostsProps) {
   };
 
   const handleFollowUser = async (follow: Follow): Promise<void> => {
-    dispatch(followUser(follow));
+    dispatch(subscribeToProfile(follow));
   };
 
   const elements = posts.map((post) => {
