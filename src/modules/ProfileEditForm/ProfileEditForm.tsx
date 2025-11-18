@@ -1,6 +1,10 @@
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useRef, type ReactNode } from "react";
+import {
+  useRef,
+  type ReactNode,
+  type SyntheticEvent,
+} from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -23,17 +27,17 @@ const { VITE_API_URL: baseURL } = import.meta.env;
 export default function ProfileEditForm(): ReactNode {
   const user: User = useSelector(selectUser)!;
   const dispatch = useDispatch<AppDispatch>();
+  const avatarRef = useRef<HTMLImageElement>(null);
 
   const {
     register,
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm<FormData>({
+  } = useForm({
     resolver: yupResolver(editProfileSchema),
     mode: "onChange",
   });
-  const avatarRef = useRef(null);
 
   useEffect(() => {
     setValue(
@@ -47,13 +51,19 @@ export default function ProfileEditForm(): ReactNode {
     setValue(fields.about.name as keyof FormData, user.about ? user.about : "");
   }, [user, setValue]);
 
-  const handleOnFileUploadChange = (event: unknown) => {
-    // const file = event.target.files[0];
-    // avatarRef.current.src = URL.createObjectURL(file);
-    // setValue(fields.avatar.name, file);
+  const handleOnFileUploadChange = (
+    event: SyntheticEvent<HTMLInputElement>
+  ) => {
+    const target = event.target as HTMLInputElement;
+    if (!target.files) return;
+    const file: File | null = target.files[0];
+    avatarRef.current!.src = URL.createObjectURL(file);
+    setValue(fields.avatar.name as keyof FormData, file);
   };
 
-  const handleOnSubmit = (values: unknown) => {
+  const onSubmitHandler = (values: unknown) => {
+    console.log(values);
+    
     dispatch(updateUser(values as User));
   };
 
@@ -98,7 +108,7 @@ export default function ProfileEditForm(): ReactNode {
         </label>
       </div>
       <form
-        onSubmit={handleSubmit(handleOnSubmit)}
+        onSubmit={handleSubmit(onSubmitHandler)}
         className={styles.form}
         id="editProfileForm"
       >

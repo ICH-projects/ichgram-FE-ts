@@ -115,7 +115,7 @@ export default function PostCard({
           <Link to={`/profile/${post.userId}`} className={styles.username}>
             {post.user.username ? post.user.username : "Sashaa"}
           </Link>
-          <p className={styles.date}>{toNotificationFormat(post.updatedAt)}</p>
+          <p className={styles.date}>{toNotificationFormat(String(post.updatedAt))}</p>
           {!isUserFollowed(post.user, currentUser) && (
             <button
               className={styles.followBtn}

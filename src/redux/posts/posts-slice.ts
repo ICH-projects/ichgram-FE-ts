@@ -13,7 +13,7 @@ import {
   createPost,
   findPosts,
 } from "./posts-thunks";
-import { subscribeToProfile } from "../profile/profile-thunks";
+import { subscribeToProfile, updateUser } from "../profile/profile-thunks";
 import type { PostsStore } from "../../typescript/types";
 
 const initialState: PostsStore = {
@@ -32,7 +32,7 @@ const postsSlice = createSlice({
       .addCase(getLastUpdatedPosts.fulfilled, (store, { payload }) => {
         store.loading = false;
         store.posts = mergeArraysDistinct(store.posts, payload);
-        store.message = "Request successfully processed";
+        store.message = "Posts successfully retrieved";
       })
       .addCase(getLastUpdatedPosts.rejected, (store, { payload }) => {
         store.posts = [];
@@ -43,7 +43,7 @@ const postsSlice = createSlice({
       .addCase(getPosts.fulfilled, (store, { payload }) => {
         store.loading = false;
         store.posts = mergeArraysDistinct(store.posts, payload);
-        store.message = "Request successfully processed";
+        store.message = "Posts successfully retrieved";
       })
       .addCase(getPosts.rejected, (store, { payload }) => {
         store.posts = [];
@@ -119,6 +119,20 @@ const postsSlice = createSlice({
         store.message = "Post successfully deleted";
       })
       .addCase(deletePost.rejected, (store, { payload }) => {
+        rejected(store, { payload });
+      })
+
+      .addCase(updateUser.pending, pending)
+      .addCase(updateUser.fulfilled, (store, { payload }) => {
+        store.loading = false;
+        store.posts.map((p) => {
+          if (p.userId === payload.id) {
+            p.user = { ...p.user, ...payload };
+          }
+        });
+        store.message = "Profile successfully updated";
+      })
+      .addCase(updateUser.rejected, (store, { payload }) => {
         rejected(store, { payload });
       });
   },

@@ -87,6 +87,7 @@ export type Message = {
   authorId: number;
   text: string;
   author: User;
+  updatedAt: Date;
 };
 
 export type StoreAsync = {

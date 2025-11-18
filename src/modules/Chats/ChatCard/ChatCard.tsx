@@ -1,16 +1,30 @@
-import { toNotificationFormat } from "/src/shared/utils/dateFormat.js";
+import type { Chat, Message, User } from "../../../typescript/types";
+
+import { toNotificationFormat } from "../../../shared/utils/dateFormat";
 
 import styles from "./ChatCard.module.css";
 
 const { VITE_API_URL: baseURL } = import.meta.env;
 
-export default function ChatCard({ chat, active, handleClick, currentUser }) {
-  const otherUser =
+interface IChatCard {
+  chat: Chat;
+  active: boolean;
+  handleClick: (chat: Chat) =>  void;
+  currentUser: User;
+}
+
+export default function ChatCard({
+  chat,
+  active,
+  handleClick,
+  currentUser,
+}: IChatCard) {
+  const otherUser: User & { messages?: Message[] } =
     chat.member1Id === currentUser.id ? chat.member2 : chat.member1;
 
-  let lastMessageDate = null;
+  let lastMessageDate: string | null = null;
   if (otherUser?.messages && Array.isArray(otherUser?.messages)) {
-    lastMessageDate = otherUser?.messages[0]?.updatedAt;
+    lastMessageDate = String(otherUser?.messages[0]?.updatedAt);
   }
 
   return (

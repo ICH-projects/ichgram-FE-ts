@@ -8,6 +8,7 @@ interface IButtonProps {
   children?: ReactNode;
   type?: "button" | "submit" | "reset" | undefined;
   handleClick?: (...args: unknown[]) => void;
+  disabled?: boolean;
 }
 
 export default function Button({

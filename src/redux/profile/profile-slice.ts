@@ -49,7 +49,7 @@ const profileSlice = createSlice({
       .addCase(updateUser.pending, pending)
       .addCase(updateUser.fulfilled, (store, { payload }) => {
         store.loading = false;
-        store.profile = payload;
+        store.profile = { ...store.profile, ...payload };
         store.message = "Profile successfully updated";
       })
       .addCase(updateUser.rejected, (store, { payload }) => {

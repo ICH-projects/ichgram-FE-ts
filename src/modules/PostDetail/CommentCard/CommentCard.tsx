@@ -1,12 +1,19 @@
 import { Link } from "react-router-dom";
 
-import { toNotificationFormat } from "/src/shared/utils/dateFormat";
+import type { Comment } from "../../../typescript/types";
+
+import { toNotificationFormat } from "../../../shared/utils/dateFormat";
 
 import styles from "./CommentCard.module.css";
 
+
 const { VITE_API_URL: baseURL } = import.meta.env;
 
-export default function CommentCard({ comment }) {
+interface ICommentCard {
+  comment: Comment
+}
+
+export default function CommentCard({ comment }: ICommentCard) {
   return (
     <div className={styles.commentCard}>
       <Link
@@ -26,7 +33,7 @@ export default function CommentCard({ comment }) {
         </Link>
         <span className={styles.commentText}> {comment?.text}</span>
         <p className={styles.commentDate}>
-          {toNotificationFormat(comment?.updatedAt)}
+          {toNotificationFormat(String(comment?.updatedAt))}
         </p>
       </div>
     </div>

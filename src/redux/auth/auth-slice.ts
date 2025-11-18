@@ -15,8 +15,7 @@ import {
 } from "./auth-thunks";
 
 import type { AuthStore } from "../../typescript/types";
-
-
+import { updateUser } from "../profile/profile-thunks";
 
 const initialState: AuthStore = {
   loading: false,
@@ -67,7 +66,17 @@ const authSlice = createSlice({
         store.user = null;
         store.message = null;
       })
-      .addCase(logoutUser.rejected, rejected);
+      .addCase(logoutUser.rejected, rejected)
+
+      .addCase(updateUser.pending, pending)
+      .addCase(updateUser.fulfilled, (store, { payload }) => {
+        store.loading = false;
+        store.user = { ...store.user, ...payload };
+        store.message = "Profile successfully updated";
+      })
+      .addCase(updateUser.rejected, (store, { payload }) => {
+        rejected(store, { payload });
+      });
   },
   reducers: {},
 });

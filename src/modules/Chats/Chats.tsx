@@ -69,7 +69,7 @@ export default function Chats({ initCompanionId }: IChatsProps) {
       chat={chat}
       active={chat?.id === activeChat?.id ? true : false}
       handleClick={handleClickOnChat}
-      currentUser={currentUser}
+      currentUser={currentUser!}
     />
   ));
 
