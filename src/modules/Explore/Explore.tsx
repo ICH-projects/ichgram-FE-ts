@@ -10,12 +10,14 @@ import ExploreCard from "./ExploreCard/ExploreCard";
 import styles from "./Explore.module.css";
 
 interface IExploreProps {
+  className?: string;
   posts: Post[];
 }
 
-export default function Explore({ posts }: IExploreProps) {
-  const dispatch = useDispatch<AppDispatch>();
+export default function Explore({ posts, className = "" }: IExploreProps) {
+  const fullClassName: string = `${styles.explore} ${className}`;
 
+  const dispatch = useDispatch<AppDispatch>();
   const showPost = (postId: number) => {
     dispatch(
       showModal({
@@ -28,13 +30,7 @@ export default function Explore({ posts }: IExploreProps) {
   };
 
   const elements = posts.map((post) => {
-    return (
-      <ExploreCard
-        key={post.id}
-        post={post}
-        showPost={showPost}
-      />
-    );
+    return <ExploreCard key={post.id} post={post} showPost={showPost} />;
   });
-  return <div className={styles.explore}> {elements} </div>;
+  return <div className={fullClassName}> {elements} </div>;
 }

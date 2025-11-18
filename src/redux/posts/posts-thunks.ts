@@ -6,6 +6,7 @@ import type { Comment,  Like, Post } from "../../typescript/types";
 import {
   createPostApi,
   deletePostByIdApi,
+  findPostsApi,
   getLastUpdatedPostsApi,
   getPostsApi,
 } from "../../shared/api/post-api";
@@ -33,6 +34,21 @@ export const getPosts = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const { data } = await getPostsApi();
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        (error as AxiosError<{ message: string }>).response?.data?.message ||
+          (error as AxiosError).message
+      );
+    }
+  }
+);
+
+export const findPosts = createAsyncThunk(
+  "posts/search",
+  async (payload: Post, { rejectWithValue }) => {
+    try {
+      const { data } = await findPostsApi(payload);
       return data;
     } catch (error) {
       return rejectWithValue(

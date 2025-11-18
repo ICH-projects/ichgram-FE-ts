@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import { type AppDispatch } from "../../redux/store";
-import type { Follow, Post, User } from "../../typescript/types";
+import type { Follow, User } from "../../typescript/types";
 
 import { selectUser } from "../../redux/auth/auth-selectors";
 import { selectProfile } from "../../redux/profile/profile-selectors";
@@ -17,7 +17,7 @@ const { VITE_API_URL: baseURL } = import.meta.env;
 export default function Profile() {
   const dispatch = useDispatch<AppDispatch>();
   const currentUser: User | null = useSelector(selectUser);
-  const profile: (User & { posts: Post[] }) | null = useSelector(selectProfile);
+  const profile: User | null = useSelector(selectProfile);
   const isMyProfile: boolean = currentUser!.id === profile?.id;
 
   const followUserHandler = async () => {

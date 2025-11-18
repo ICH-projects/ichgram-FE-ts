@@ -100,7 +100,7 @@ export type AuthStore = StoreAsync & {
 };
 
 export type ProfileStore = StoreAsync & {
-  profile: (User & { posts: Post[] }) | null;
+  profile: User | null;
 };
 
 export type PostsStore = StoreAsync & {

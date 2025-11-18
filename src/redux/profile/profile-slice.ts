@@ -40,7 +40,8 @@ const profileSlice = createSlice({
       })
       .addCase(subscribeToProfile.rejected, (store, { payload }) => {
         rejected(store, { payload });
-      });
+      })
+
   },
   reducers: {},
 });

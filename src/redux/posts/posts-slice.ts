@@ -11,9 +11,9 @@ import {
   deletePost,
   getPosts,
   createPost,
+  findPosts,
 } from "./posts-thunks";
 import { subscribeToProfile } from "../profile/profile-thunks";
-
 import type { PostsStore } from "../../typescript/types";
 
 const initialState: PostsStore = {
@@ -47,6 +47,16 @@ const postsSlice = createSlice({
       })
       .addCase(getPosts.rejected, (store, { payload }) => {
         store.posts = [];
+        rejected(store, { payload });
+      })
+
+      .addCase(findPosts.pending, pending)
+      .addCase(findPosts.fulfilled, (store, { payload }) => {
+        store.loading = false;
+        store.posts = mergeArraysDistinct(store.posts, payload);
+        store.message = "Profile successfully retrieved";
+      })
+      .addCase(findPosts.rejected, (store, { payload }) => {
         rejected(store, { payload });
       })
 

@@ -23,3 +23,10 @@ export const selectPostsServiceData = (store: Store): StoreAsync => store.posts;
 export const selectPosts = createSelector(selectAllPosts, (posts) => {
   return [...posts].sort((a, b) => Number(a.updatedAt) - Number(b.updatedAt));
 });
+
+export const selectPostsByUserId = (userId: number) =>
+  createSelector(selectAllPosts, (posts) => {
+    return [...posts]
+      .filter((p) => p.userId === userId)
+      .sort((a, b) => Number(a.updatedAt) - Number(b.updatedAt));
+  });

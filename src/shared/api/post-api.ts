@@ -1,5 +1,4 @@
 import instance from "./instance";
-import { fetchDecorator } from "../../shared/utils/fetchDecorator";
 import type { Post } from "../../typescript/types";
 
 export const createPostApi = async (payload: Post) => {
@@ -14,10 +13,10 @@ export const getPostsApi = async () => {
   return await instance.get<Post[]>("posts");
 };
 
-export const findPostsApi = fetchDecorator((payload) => {
-  return instance.get("posts", { params: { ...payload } });
-});
+export const findPostsApi = (payload: Post) => {
+  return instance.get<Post[]>("posts", { params: { ...payload } });
+};
 
-export const deletePostByIdApi =async (payload: number) => {
+export const deletePostByIdApi = async (payload: number) => {
   return await instance.delete<null>(`posts/${payload}`);
 };
