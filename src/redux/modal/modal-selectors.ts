@@ -1,4 +1,3 @@
-import type { Store } from "../root-reducer";
-import type { ModalStore } from "./modal-slice";
+import type { ModalStore, Store } from "../../typescript/types";
 
 export const selectModal = (store: Store): ModalStore => store.modal;

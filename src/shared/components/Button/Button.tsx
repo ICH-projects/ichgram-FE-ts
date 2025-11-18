@@ -1,13 +1,23 @@
+import type { ReactNode } from "react";
 import styles from "./Button.module.css";
+
+interface IButtonProps {
+  variant?: string;
+  className?: string;
+  active?: boolean;
+  children?: ReactNode;
+  type?: "button" | "submit" | "reset" | undefined;
+  handleClick?: (...args: unknown[]) => void;
+}
 
 export default function Button({
   variant = "text",
-  className,
+  className = "",
   active = false,
   children,
   handleClick = () => {},
   ...props
-}) {
+}: IButtonProps) {
   const fullClassName = `${styles.button} ${styles[variant]} ${
     active && styles.active
   } ${className}`;

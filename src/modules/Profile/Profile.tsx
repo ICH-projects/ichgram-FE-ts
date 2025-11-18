@@ -11,6 +11,7 @@ import { subscribeToProfile } from "../../redux/profile/profile-thunks";
 import Button from "../../shared/components/Button/Button";
 
 import styles from "./Profile.module.css";
+import { showModal } from "../../redux/modal/modal-slice";
 
 const { VITE_API_URL: baseURL } = import.meta.env;
 
@@ -22,6 +23,16 @@ export default function Profile() {
 
   const followUserHandler = async () => {
     dispatch(subscribeToProfile({ targetUserId: profile?.id } as Follow));
+  };
+
+  const editProfileHandler = () => {
+    dispatch(
+      showModal({
+        childType: "profile_edit",
+        childProps: {
+        },
+      })
+    );
   };
 
   return (
@@ -60,9 +71,13 @@ export default function Profile() {
                 Message
               </Link>
             ) : (
-              <Link to={`edit`} className={styles.btnMessage}>
+              <Button
+                type="button"
+                className={styles.btnMessage}
+                handleClick={editProfileHandler}
+              >
                 Edit profile
-              </Link>
+              </Button>
             )}
           </div>
           <div className={styles.statsWrapper}>

@@ -3,7 +3,11 @@ import { createSlice } from "@reduxjs/toolkit";
 import { pending, rejected } from "../../shared/utils/redux";
 
 import type { ProfileStore } from "../../typescript/types";
-import { subscribeToProfile, getProfileById } from "./profile-thunks";
+import {
+  subscribeToProfile,
+  getProfileById,
+  updateUser,
+} from "./profile-thunks";
 
 const initialState: ProfileStore = {
   loading: false,
@@ -42,6 +46,15 @@ const profileSlice = createSlice({
         rejected(store, { payload });
       })
 
+      .addCase(updateUser.pending, pending)
+      .addCase(updateUser.fulfilled, (store, { payload }) => {
+        store.loading = false;
+        store.profile = payload;
+        store.message = "Profile successfully updated";
+      })
+      .addCase(updateUser.rejected, (store, { payload }) => {
+        rejected(store, { payload });
+      });
   },
   reducers: {},
 });

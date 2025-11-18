@@ -1,4 +1,4 @@
-import { useEffect, useRef, type JSX } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { Outlet } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -13,6 +13,7 @@ import PostDetail, {
 } from "../../modules/PostDetail/PostDetail";
 import Notifications from "../../modules/Notifications/Notifications";
 import Search from "../../modules/Search/Search";
+import ProfileEditForm from "../../modules/ProfileEditForm/ProfileEditForm";
 
 import Container from "../../shared/components/Container/Container";
 import Modal from "../../shared/components/Modal/Modal";
@@ -20,7 +21,7 @@ import Modal from "../../shared/components/Modal/Modal";
 import styles from "./PrivatePageWrapper.module.css";
 import { AppSocket } from "../../shared/socket/socket-client";
 
-export default function PrivatePageWrapper(): JSX.Element {
+export default function PrivatePageWrapper(): ReactNode {
   const { hidden, childType, childProps } = useSelector(selectModal);
   const dispatch = useDispatch<AppDispatch>();
 
@@ -62,6 +63,7 @@ export default function PrivatePageWrapper(): JSX.Element {
             )}
             {childType === "notifications" && <Notifications />}
             {childType === "search" && <Search />}
+            {childType === "profile_edit" && <ProfileEditForm />}
           </Modal>
         </div>
         <div className={styles.footer}>footer</div>

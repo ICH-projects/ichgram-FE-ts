@@ -1,0 +1,100 @@
+.editProfile {
+  padding: 3rem;
+  margin: 6rem auto;
+  /* padding-inline: 6rem; */
+  max-width: 80%;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  background-color: #fff;
+  border-radius: 1.25rem;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.header {
+  padding: 1rem;
+  border-radius: 1.25rem;
+  background-color: var(--color-background-primary);
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+}
+.userInfoWrapper {
+  display: flex;
+  gap: 1rem;
+}
+.avatarWrapper {
+  width: 3.5rem;
+  height: 3.5rem;
+}
+.avatar {
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* aspect-ratio: 1/1; */
+}
+
+.infoWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.username {
+  font-weight: 700;
+}
+.about {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+}
+.fileInput {
+  display: none;
+}
+.fileInputLabel {
+  padding: 0.5rem 2rem;
+  background-color: var(--color-background-button-primary);
+  border-radius: 0.5rem;
+  border: none;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  min-width: fit-content;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.fieldTitle {
+  font-weight: 700;
+}
+.textInput {
+  font-size: 1rem;
+  width: 100%;
+  outline: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-border);
+}
+.textarea {
+  outline: none;
+  height: 10rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-border);
+}
+.btnSave {
+  margin-top: 4rem;
+  padding: 0.5rem 6rem;
+  border-radius: 0.5rem;
+  width: fit-content;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
