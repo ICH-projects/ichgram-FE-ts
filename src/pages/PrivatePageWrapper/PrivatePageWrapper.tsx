@@ -14,6 +14,7 @@ import PostDetail, {
 import Notifications from "../../modules/Notifications/Notifications";
 import Search from "../../modules/Search/Search";
 import ProfileEditForm from "../../modules/ProfileEditForm/ProfileEditForm";
+import Footer from "../../modules/Footer/Footer";
 
 import Container from "../../shared/components/Container/Container";
 import Modal from "../../shared/components/Modal/Modal";
@@ -66,7 +67,9 @@ export default function PrivatePageWrapper(): ReactNode {
             {childType === "profile_edit" && <ProfileEditForm />}
           </Modal>
         </div>
-        <div className={styles.footer}>footer</div>
+        <div className={styles.footer}>
+          <Footer />
+        </div>
       </div>
     </Container>
   );

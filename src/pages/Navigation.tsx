@@ -28,7 +28,6 @@ export default function Navigation() {
           <Route path="messages" element={<ChatPage />} />
           <Route path="messages/:member2Id" element={<ChatPage />} />
           <Route path="profile/:id" element={<ProfilePage />} />
-          {/* <Route path="/profile/:id/edit" element={<ProfileEditPage />} /> */}
         </Route>
       </Route>
       <Route path="/auth" element={<PublicRoute />}>

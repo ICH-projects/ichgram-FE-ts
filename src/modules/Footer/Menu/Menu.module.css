@@ -1,0 +1,13 @@
+.menu {
+  display: flex;
+  gap: 2rem;
+}
+
+.link {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+

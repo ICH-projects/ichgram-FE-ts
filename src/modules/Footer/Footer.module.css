@@ -1,0 +1,13 @@
+.footer {
+  padding-block: 1.5rem 4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 3rem;
+}
+
+.copyright {
+  text-decoration: none;
+  color: var(--color-text-secondary);
+}
