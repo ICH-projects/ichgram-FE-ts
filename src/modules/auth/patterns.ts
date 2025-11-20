@@ -5,7 +5,7 @@ export const fullnamePattern = {
 
 export const usernamePattern = {
   regexp: /^[a-zA-Z0-9 ]*$/,
-  message: "Special characters are not allowed in Full Name",
+  message: "Special characters are not allowed in User Name",
 };
 
 export const emailPattern = {

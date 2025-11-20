@@ -3,8 +3,8 @@ import { fetchDecorator } from "../utils/fetchDecorator";
 
 import type { User } from "../../typescript/types";
 
-export const signupUserApi = async (payload: User) => {
-  const { data } = await instance.post("/auth/signup", payload);
+export const signupUserApi = async (payload: User): Promise<string> => {
+  const { data } = await instance.post<string>("/auth/signup", payload);
   return data;
 };
 
@@ -22,7 +22,13 @@ export const resetPasswordApi = async (payload: User) => {
   return data;
 };
 
-export const updatePasswordApi = async ({ values, token }: {values: string, token: string}) => {
+export const updatePasswordApi = async ({
+  values,
+  token,
+}: {
+  values: string;
+  token: string;
+}) => {
   const { data } = await instance.put("/auth/update", values, {
     params: { token },
   });

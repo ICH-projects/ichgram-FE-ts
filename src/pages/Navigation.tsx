@@ -12,7 +12,7 @@ import NotFoundPage from "./other/NotFoundPage/NotFoundPage";
 // Public pages
 import PublicPageWrapper from "./public/PublicPageWrapper/PublicPageWrapper";
 import AuthLoginPage from "./public/AuthLoginPage/AuthLoginPage";
-// import AuthSignupPage from "/src/pages/AuthSignupPage/AuthSignupPage";
+import AuthSignupPage from "./public/AuthSignupPage/AuthSignupPage";
 // import AuthResetPasswordPage from "/src/pages/AuthResetPasswordPage/AuthResetPasswordPage";
 // import AuthConfirmPage from "/src/pages/AuthConfirmPage/AuthConfirmPage";
 
@@ -42,7 +42,7 @@ export default function Navigation(): ReactNode {
       <Route path="/auth" element={<PublicRoute />}>
         <Route path="*" element={<PublicPageWrapper />}>
           <Route path="login" element={<AuthLoginPage />} />
-          {/* <Route path="signup" element={<AuthSignupPage />} /> */}
+          <Route path="signup" element={<AuthSignupPage />} />
           {/* <Route path="reset" element={<AuthResetPasswordPage />} /> */}
           {/* <Route path="verify" element={<AuthConfirmPage />} /> */}
         </Route>

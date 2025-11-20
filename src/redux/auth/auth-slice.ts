@@ -12,6 +12,7 @@ import {
   // updatePassword,
   // updateUser,
   refreshTokens,
+  signupUser,
 } from "./auth-thunks";
 
 import type { AuthStore } from "../../typescript/types";
@@ -75,6 +76,15 @@ const authSlice = createSlice({
         store.message = "Profile successfully updated";
       })
       .addCase(updateUser.rejected, (store, { payload }) => {
+        rejected(store, { payload });
+      })
+
+      .addCase(signupUser.pending, pending)
+      .addCase(signupUser.fulfilled, (store, { payload }) => {
+        store.loading = false;
+        store.message = payload;
+      })
+      .addCase(signupUser.rejected, (store, { payload }) => {
         rejected(store, { payload });
       });
   },

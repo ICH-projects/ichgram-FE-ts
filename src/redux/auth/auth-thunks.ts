@@ -6,6 +6,7 @@ import {
   refreshTokensApi,
   loginUserApi,
   logoutUserApi,
+  signupUserApi,
 } from "../../shared/api/auth-api";
 import type { User } from "../../typescript/types";
 
@@ -59,6 +60,21 @@ export const logoutUser = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const data = await logoutUserApi();
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        (error as AxiosError<{ message: string }>).response?.data?.message ||
+          (error as AxiosError).message
+      );
+    }
+  }
+);
+
+export const signupUser = createAsyncThunk(
+  "auth/signup",
+  async (payload: User, { rejectWithValue }) => {
+    try {
+      const data: string = await signupUserApi(payload);
       return data;
     } catch (error) {
       return rejectWithValue(

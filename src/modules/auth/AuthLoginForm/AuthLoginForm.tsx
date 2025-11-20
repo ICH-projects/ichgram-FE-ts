@@ -8,32 +8,25 @@ import TextField from "../../../shared/components/TextField/TextField";
 import Button from "../../../shared/components/Button/Button";
 import Divider from "../../../shared/components/Divider/Divider";
 import LinkApp from "../../../shared/components/LinkApp/LinkApp";
-import Info from "../../../shared/components/Info/Info";
 
-import { fields, defaultValues } from "./fields";
-import { registerSchema } from "../schemes";
+import { loginFields, defaultLoginValues } from "../fields";
+import { loginSchema } from "../schemes";
 
 import styles from "./AuthLoginForm.module.css";
 
-export default function AuthLoginForm({
-  handleOnSubmit,
-  error,
-  loading,
-  message,
-}: {
-  handleOnSubmit: (values: User) => Promise<void>;
-  error: string | null;
-  loading: boolean;
-  message: string | null;
-}) {
+interface IAuthLoginFormProps {
+  handleOnSubmit: (user: User) => Promise<void> | void;
+}
+
+export default function AuthLoginForm({ handleOnSubmit }: IAuthLoginFormProps) {
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, isValid },
   } = useForm({
-    defaultValues,
-    resolver: yupResolver(registerSchema),
+    defaultValues: defaultLoginValues,
+    resolver: yupResolver(loginSchema),
     mode: "onChange",
   });
 
@@ -51,13 +44,13 @@ export default function AuthLoginForm({
           <TextField
             className={styles.input}
             register={register}
-            {...fields.email}
+            {...loginFields.email}
             error={errors.email?.message}
           />
           <TextField
             className={styles.input}
             register={register}
-            {...fields.password}
+            {...loginFields.password}
             error={errors.password?.message}
           />
           <Button
@@ -80,7 +73,6 @@ export default function AuthLoginForm({
           Sign up?
         </LinkApp>
       </div>
-      <Info loading={loading} error={error} message={message} />
     </div>
   );
 }
