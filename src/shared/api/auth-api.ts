@@ -1,5 +1,4 @@
 import instance from "./instance";
-import { fetchDecorator } from "../utils/fetchDecorator";
 
 import type { User } from "../../typescript/types";
 
@@ -8,30 +7,33 @@ export const signupUserApi = async (payload: User): Promise<string> => {
   return data;
 };
 
-export const confirmEmailApi = fetchDecorator((token) =>
-  instance.get("/auth/verify", { params: { token } })
-);
+export const confirmEmailApi = (token: string) =>
+  instance.get("/auth/confirm", { params: { token } });
 
 export const loginUserApi = async (payload: User) => {
   const { data } = await instance.post("/auth/login", payload);
   return data;
 };
 
-export const resetPasswordApi = async (payload: User) => {
-  const { data } = await instance.post("/auth/reset", payload);
+export const resetPasswordApi = async (email: string) => {
+  const  data  = await instance.post<string>("/auth/reset", { email });
   return data;
 };
 
 export const updatePasswordApi = async ({
-  values,
+  password,
   token,
 }: {
-  values: string;
+  password: string;
   token: string;
 }) => {
-  const { data } = await instance.put("/auth/update", values, {
-    params: { token },
-  });
+  const  data  = await instance.put(
+    "/auth/update",
+    { password },
+    {
+      params: { token },
+    }
+  );
   return data;
 };
 

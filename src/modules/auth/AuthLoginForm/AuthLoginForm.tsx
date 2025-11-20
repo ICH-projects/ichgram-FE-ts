@@ -9,7 +9,7 @@ import Button from "../../../shared/components/Button/Button";
 import Divider from "../../../shared/components/Divider/Divider";
 import LinkApp from "../../../shared/components/LinkApp/LinkApp";
 
-import { loginFields, defaultLoginValues } from "../fields";
+import { fields, defaultLoginValues } from "../fields";
 import { loginSchema } from "../schemes";
 
 import styles from "./AuthLoginForm.module.css";
@@ -44,13 +44,13 @@ export default function AuthLoginForm({ handleOnSubmit }: IAuthLoginFormProps) {
           <TextField
             className={styles.input}
             register={register}
-            {...loginFields.email}
+            {...fields.email}
             error={errors.email?.message}
           />
           <TextField
             className={styles.input}
             register={register}
-            {...loginFields.password}
+            {...fields.password}
             error={errors.password?.message}
           />
           <Button

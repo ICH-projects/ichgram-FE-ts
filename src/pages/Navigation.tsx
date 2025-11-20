@@ -13,8 +13,8 @@ import NotFoundPage from "./other/NotFoundPage/NotFoundPage";
 import PublicPageWrapper from "./public/PublicPageWrapper/PublicPageWrapper";
 import AuthLoginPage from "./public/AuthLoginPage/AuthLoginPage";
 import AuthSignupPage from "./public/AuthSignupPage/AuthSignupPage";
-// import AuthResetPasswordPage from "/src/pages/AuthResetPasswordPage/AuthResetPasswordPage";
-// import AuthConfirmPage from "/src/pages/AuthConfirmPage/AuthConfirmPage";
+import AuthResetPasswordPage from "./public/AuthResetPasswordPage/AuthResetPasswordPage";
+import AuthConfirmationPage from "./public/AuthConfirmationPage/AuthConfirmationPage";
 
 // Private pages
 import PrivatePageWrapper from "./private/PrivatePageWrapper/PrivatePageWrapper";
@@ -43,8 +43,8 @@ export default function Navigation(): ReactNode {
         <Route path="*" element={<PublicPageWrapper />}>
           <Route path="login" element={<AuthLoginPage />} />
           <Route path="signup" element={<AuthSignupPage />} />
-          {/* <Route path="reset" element={<AuthResetPasswordPage />} /> */}
-          {/* <Route path="verify" element={<AuthConfirmPage />} /> */}
+          <Route path="reset" element={<AuthResetPasswordPage />} />
+          <Route path="confirm" element={<AuthConfirmationPage />} />
         </Route>
       </Route>
 

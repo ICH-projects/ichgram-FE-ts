@@ -8,7 +8,7 @@ import TextField from "../../../shared/components/TextField/TextField";
 import Button from "../../../shared/components/Button/Button";
 import LinkApp from "../../../shared/components/LinkApp/LinkApp";
 
-import { signupFields, defaultSignupValues } from "../fields";
+import { fields, defaultSignupValues } from "../fields";
 import { signupSchema } from "../schemes";
 
 import styles from "./AuthSignupForm.module.css";
@@ -49,25 +49,25 @@ export default function AuthSignupForm({
           <TextField
             className={styles.input}
             register={register}
-            {...signupFields.email}
+            {...fields.email}
             error={errors.email?.message}
           />
           <TextField
             className={styles.input}
             register={register}
-            {...signupFields.fullname}
+            {...fields.fullname}
             error={errors.fullname?.message}
           />
           <TextField
             className={styles.input}
             register={register}
-            {...signupFields.username}
+            {...fields.username}
             error={errors.username?.message}
           />
           <TextField
             className={styles.input}
             register={register}
-            {...signupFields.password}
+            {...fields.password}
             error={errors.password?.message}
           />
 

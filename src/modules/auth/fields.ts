@@ -10,20 +10,16 @@ export const defaultSignupValues = {
   fullname: null,
 };
 
-export const loginFields = {
-  email: {
-    name: "email",
-    type: "text",
-    placeholder: "Email",
-  },
-  password: {
-    name: "password",
-    type: "password",
-    placeholder: "Password",
-  },
+export const defaultResetPasswordValues = {
+  email: "",
 };
 
-export const signupFields = {
+export const defaultUpdatePasswordValues = {
+  password: "",
+  confirmPassword: "",
+};
+
+export const fields = {
   email: {
     name: "email",
     type: "text",
@@ -33,6 +29,11 @@ export const signupFields = {
     name: "password",
     type: "password",
     placeholder: "Password",
+  },
+  confirmPassword: {
+    name: "confirmPassword",
+    type: "password",
+    placeholder: "Confirm password",
   },
   username: {
     name: "username",

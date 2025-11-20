@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { pending, rejected } from "../../shared/utils/redux";
 
 import {
+  confirmEmail,
   // registerUser,
   getCurrentUser,
   loginUser,
@@ -12,7 +13,9 @@ import {
   // updatePassword,
   // updateUser,
   refreshTokens,
+  resetPassword,
   signupUser,
+  updatePassword,
 } from "./auth-thunks";
 
 import type { AuthStore } from "../../typescript/types";
@@ -59,7 +62,9 @@ const authSlice = createSlice({
         store.user = payload.user;
         store.message = payload.message;
       })
-      .addCase(loginUser.rejected, rejected)
+      .addCase(loginUser.rejected, (store, { payload }) => {
+        rejected(store, { payload });
+      })
 
       .addCase(logoutUser.pending, pending)
       .addCase(logoutUser.fulfilled, (store) => {
@@ -85,6 +90,33 @@ const authSlice = createSlice({
         store.message = payload;
       })
       .addCase(signupUser.rejected, (store, { payload }) => {
+        rejected(store, { payload });
+      })
+
+      .addCase(confirmEmail.pending, pending)
+      .addCase(confirmEmail.fulfilled, (store, { payload }) => {
+        store.loading = false;
+        store.message = payload;
+      })
+      .addCase(confirmEmail.rejected, (store, { payload }) => {
+        rejected(store, { payload });
+      })
+
+      .addCase(resetPassword.pending, pending)
+      .addCase(resetPassword.fulfilled, (store, { payload }) => {
+        store.loading = false;
+        store.message = payload;
+      })
+      .addCase(resetPassword.rejected, (store, { payload }) => {
+        rejected(store, { payload });
+      })
+
+      .addCase(updatePassword.pending, pending)
+      .addCase(updatePassword.fulfilled, (store, { payload }) => {
+        store.loading = false;
+        store.message = payload;
+      })
+      .addCase(updatePassword.rejected, (store, { payload }) => {
         rejected(store, { payload });
       });
   },

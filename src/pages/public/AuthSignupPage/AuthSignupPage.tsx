@@ -20,11 +20,9 @@ export default function AuthSignupPage() {
   };
 
   return (
-    <>
-      <div className={styles.authSignupPage}>
-        <AuthSignupForm signupHandler={signupHandler} />
-      </div>
+    <div className={styles.authSignupPage}>
+      <AuthSignupForm signupHandler={signupHandler} />
       <Info loading={loading} error={error} message={message} />
-    </>
+    </div>
   );
 }

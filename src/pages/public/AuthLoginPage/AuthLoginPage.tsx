@@ -20,15 +20,15 @@ export default function AuthLoginPage() {
     dispatch(loginUser(values));
   };
 
+  console.log(error);
+
   return (
-    <>
-      <div className={styles.authLoginPage}>
-        <div className={styles.gridWrapper}>
-          <BannerPhone />
-          <AuthLoginForm handleOnSubmit={handleOnSubmit} />
-        </div>
+    <div className={styles.authLoginPage}>
+      <div className={styles.gridWrapper}>
+        <BannerPhone />
+        <AuthLoginForm handleOnSubmit={handleOnSubmit} />
       </div>
       <Info loading={loading} error={error} message={message} />
-    </>
+    </div>
   );
 }

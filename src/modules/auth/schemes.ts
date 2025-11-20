@@ -39,5 +39,27 @@ export const signupSchema = yup.object({
     .nullable(),
 });
 
+export const emailSchema = yup.object({
+  email: yup
+    .string()
+    .trim()
+    .required()
+    .matches(emailPattern.regexp, emailPattern.message),
+});
+
+export const updatePasswordSchema = yup.object({
+  password: yup
+    .string()
+    .required()
+    .matches(passwordPattern.regexp, passwordPattern.message),
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref("password")])
+    .required()
+    .matches(passwordPattern.regexp, passwordPattern.message),
+});
+
 // export type LoginFormData = yup.InferType<typeof loginSchema>;
 // export type SignupFormData = yup.InferType<typeof signupSchema>;
+export type EmailFormData = yup.InferType<typeof emailSchema>;
+export type UpdatePasswordFormData = yup.InferType<typeof updatePasswordSchema>;
