@@ -1,48 +1,23 @@
-import { render, screen, type RenderResult } from "@testing-library/react";
+import {
+  render,
+  screen,
+  waitFor,
+  type RenderResult,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { vi } from "vitest";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import { MemoryRouter } from "react-router-dom";
+import { server } from "./mocks/server";
 
 import rootReducer from "../../../redux/root-reducer";
-import { type RootState } from "../../../redux/store";
-import { loginUser } from "../../../redux/auth/auth-thunks";
+import { type RootState, store } from "../../../redux/store";
 
 import AuthLoginPage from "./AuthLoginPage";
 
-type MockAsyncThunk = ((
-  args: unknown
-) => (dispatch: unknown) => Promise<{ type: string; payload: unknown }>) & {
-  pending: { type: string };
-  fulfilled: { type: string };
-  rejected: { type: string };
-};
-// Мокаем loginUser, чтобы не было сетевых запросов
-vi.mock("../../../redux/auth/auth-thunks", () => {
-  const createAsyncThunkMock = (type: string): MockAsyncThunk => {
-    const thunk = vi.fn((args: unknown) => async (dispatch: unknown) => {
-      return { type: `${type}/fulfilled`, payload: args };
-    }) as unknown as MockAsyncThunk;
-
-    thunk.pending = { type: `${type}/pending` };
-    thunk.fulfilled = { type: `${type}/fulfilled` };
-    thunk.rejected = { type: `${type}/rejected` };
-
-    return thunk;
-  };
-
-  return {
-    loginUser: createAsyncThunkMock("auth/loginUser"),
-    getCurrentUser: createAsyncThunkMock("auth/getCurrentUser"),
-    refreshTokens: createAsyncThunkMock("auth/refreshTokens"),
-    logoutUser: createAsyncThunkMock("auth/logoutUser"),
-    signupUser: createAsyncThunkMock("auth/signupUser"),
-    confirmEmail: createAsyncThunkMock("auth/confirmEmail"),
-    resetPassword: createAsyncThunkMock("auth/resetPassword"),
-    updatePassword: createAsyncThunkMock("auth/updatePassword"),
-  };
-});
+beforeAll(() => server.listen());
+afterEach(() => server.resetHandlers());
+afterAll(() => server.close());
 
 interface RenderWithStoreResult extends RenderResult {
   store: ReturnType<typeof configureStore>;
@@ -69,7 +44,7 @@ function renderWithStore(
 describe("AuthLoginPage", () => {
   const defaultPersist = { version: -1, rehydrated: true };
 
-  test("renders without crashing", async () => {
+  test("renders login page with essential UI elements", async () => {
     renderWithStore({
       auth: {
         loading: false,
@@ -80,13 +55,12 @@ describe("AuthLoginPage", () => {
       },
     });
 
-    // Тестируем что страница рендерится и есть ключевые элементы
     expect(screen.getByRole("textbox", { name: /email/i })).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/password/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /log in/i })).toBeInTheDocument();
   });
 
-  test("shows error message on invalid email", async () => {
+  test("displays validation error for invalid email input", async () => {
     renderWithStore({
       auth: {
         loading: false,
@@ -108,7 +82,7 @@ describe("AuthLoginPage", () => {
     ).not.toBeInTheDocument();
   });
 
-  test("shows error message on empty password", async () => {
+  test("displays required field error when password is empty", async () => {
     renderWithStore({
       auth: {
         loading: false,
@@ -130,16 +104,14 @@ describe("AuthLoginPage", () => {
     ).toBeInTheDocument();
   });
 
-  test("dispatches loginUser on valid form submission", async () => {
-    renderWithStore({
-      auth: {
-        loading: false,
-        error: null,
-        message: "",
-        user: null,
-        _persist: defaultPersist,
-      },
-    });
+  test("submits form and displays success message after API login", async () => {
+    render(
+      <Provider store={store}>
+        <MemoryRouter>
+          <AuthLoginPage />
+        </MemoryRouter>
+      </Provider>
+    );
 
     const emailInput = screen.getByRole("textbox", { name: /email/i });
     const passwordInput = screen.getByPlaceholderText(/password/i);
@@ -149,9 +121,8 @@ describe("AuthLoginPage", () => {
     await userEvent.type(passwordInput, "password123");
     await userEvent.click(submitButton);
 
-    expect(loginUser).toHaveBeenCalledWith({
-      email: "test@example.com",
-      password: "password123",
+    await waitFor(() => {
+      expect(screen.getByText(/Login successfully/i)).toBeInTheDocument();
     });
   });
 });
