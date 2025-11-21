@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, type RenderResult } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 import { Provider } from "react-redux";
@@ -30,24 +30,34 @@ vi.mock("../../../redux/auth/auth-thunks", () => {
   };
 });
 
-describe("AuthLoginPage", () => {
-  function renderWithStore(preloadedState?: Partial<RootState>) {
-    const store = configureStore({
-      reducer: rootReducer,
-      preloadedState,
-    });
 
-    return render(
-      <Provider store={store}>
-        <MemoryRouter>
-          <AuthLoginPage />
-        </MemoryRouter>
-      </Provider>
-    );
-  }
+interface RenderWithStoreResult extends RenderResult {
+  store: ReturnType<typeof configureStore>;
+}
+
+function renderWithStore(
+  preloadedState?: Partial<RootState>
+): RenderWithStoreResult {
+  const store = configureStore({
+    reducer: rootReducer,
+    preloadedState,
+  });
+
+  const utils = render(
+    <Provider store={store}>
+      <MemoryRouter>
+        <AuthLoginPage />
+      </MemoryRouter>
+    </Provider>
+  );
+  return { ...utils, store };
+}
+
+describe("AuthLoginPage", () => {
+
+  const defaultPersist = { version: -1, rehydrated: true };
 
   test("renders without crashing", async () => {
-    const defaultPersist = { version: -1, rehydrated: true };
     renderWithStore({
       auth: {
         loading: false,
@@ -59,20 +69,53 @@ describe("AuthLoginPage", () => {
     });
 
     // Тестируем что страница рендерится и есть ключевые элементы
-    expect(screen.getByRole("textbox", { name: "email" })).toBeInTheDocument();
+    expect(screen.getByRole("textbox", { name: /email/i })).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/password/i)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Log in" })).toBeInTheDocument();
-    await userEvent.type(
-      screen.getByRole("textbox", { name: "email" }),
-      "wrong_email"
-    );
+    expect(screen.getByRole("button", { name: /log in/i })).toBeInTheDocument();
+  });
+
+  test("shows error message on invalid email", async () => {
+    renderWithStore({
+      auth: {
+        loading: false,
+        error: null,
+        message: "",
+        user: null,
+        _persist: defaultPersist,
+      },
+    });
+
+    const emailInput = screen.getByRole("textbox", { name: /email/i });
+    await userEvent.type(emailInput, "wrong_email");
     expect(
       await screen.findByText("Please enter a valid email address.")
     ).toBeInTheDocument();
-    await userEvent.type(screen.getByPlaceholderText(/password/i), "some");
-    await userEvent.clear(screen.getByPlaceholderText(/password/i));
+    await userEvent.type(emailInput, "correct@email.com");
+    expect(
+      screen.queryByText("Please enter a valid email address.")
+    ).not.toBeInTheDocument();
+  });
+
+  test("shows error message on empty password", async () => {
+    renderWithStore({
+      auth: {
+        loading: false,
+        error: null,
+        message: "",
+        user: null,
+        _persist: defaultPersist,
+      },
+    });
+
+    const passwordInput = screen.getByPlaceholderText(/password/i);
+    await userEvent.type(passwordInput, "somepassword");
+    expect(
+      screen.queryByText("password is a required field")
+    ).not.toBeInTheDocument();
+    await userEvent.clear(passwordInput);
     expect(
       await screen.findByText("password is a required field")
     ).toBeInTheDocument();
   });
+
 });
