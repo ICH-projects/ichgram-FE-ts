@@ -7,16 +7,30 @@ import { MemoryRouter } from "react-router-dom";
 
 import rootReducer from "../../../redux/root-reducer";
 import { type RootState } from "../../../redux/store";
+import { loginUser } from "../../../redux/auth/auth-thunks";
 
 import AuthLoginPage from "./AuthLoginPage";
 
+type MockAsyncThunk = ((
+  args: unknown
+) => (dispatch: unknown) => Promise<{ type: string; payload: unknown }>) & {
+  pending: { type: string };
+  fulfilled: { type: string };
+  rejected: { type: string };
+};
 // Мокаем loginUser, чтобы не было сетевых запросов
 vi.mock("../../../redux/auth/auth-thunks", () => {
-  const createAsyncThunkMock = (type: string) => ({
-    pending: { type: `${type}/pending` },
-    fulfilled: { type: `${type}/fulfilled` },
-    rejected: { type: `${type}/rejected` },
-  });
+  const createAsyncThunkMock = (type: string): MockAsyncThunk => {
+    const thunk = vi.fn((args: unknown) => async (dispatch: unknown) => {
+      return { type: `${type}/fulfilled`, payload: args };
+    }) as unknown as MockAsyncThunk;
+
+    thunk.pending = { type: `${type}/pending` };
+    thunk.fulfilled = { type: `${type}/fulfilled` };
+    thunk.rejected = { type: `${type}/rejected` };
+
+    return thunk;
+  };
 
   return {
     loginUser: createAsyncThunkMock("auth/loginUser"),
@@ -29,7 +43,6 @@ vi.mock("../../../redux/auth/auth-thunks", () => {
     updatePassword: createAsyncThunkMock("auth/updatePassword"),
   };
 });
-
 
 interface RenderWithStoreResult extends RenderResult {
   store: ReturnType<typeof configureStore>;
@@ -54,7 +67,6 @@ function renderWithStore(
 }
 
 describe("AuthLoginPage", () => {
-
   const defaultPersist = { version: -1, rehydrated: true };
 
   test("renders without crashing", async () => {
@@ -118,4 +130,28 @@ describe("AuthLoginPage", () => {
     ).toBeInTheDocument();
   });
 
+  test("dispatches loginUser on valid form submission", async () => {
+    renderWithStore({
+      auth: {
+        loading: false,
+        error: null,
+        message: "",
+        user: null,
+        _persist: defaultPersist,
+      },
+    });
+
+    const emailInput = screen.getByRole("textbox", { name: /email/i });
+    const passwordInput = screen.getByPlaceholderText(/password/i);
+    const submitButton = screen.getByRole("button", { name: /log in/i });
+
+    await userEvent.type(emailInput, "test@example.com");
+    await userEvent.type(passwordInput, "password123");
+    await userEvent.click(submitButton);
+
+    expect(loginUser).toHaveBeenCalledWith({
+      email: "test@example.com",
+      password: "password123",
+    });
+  });
 });
