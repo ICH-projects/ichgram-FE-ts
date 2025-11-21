@@ -10,6 +10,7 @@ interface ITextFieldProps {
   showError?: boolean;
   name: string;
   error?: string | null | undefined;
+  ariaLabel?: string;
 }
 
 export default function TextField({
@@ -19,6 +20,7 @@ export default function TextField({
   showError = true,
   name,
   error,
+  ariaLabel,
   ...props
 }: ITextFieldProps): ReactNode {
   const fullClassName = `${styles.input} ${styles[variant]} ${className}`;
@@ -29,6 +31,7 @@ export default function TextField({
         {...(register as UseFormRegister<FieldValues>)(name)}
         {...props}
         className={fullClassName}
+        aria-label={ariaLabel}
       />
       {showError && !!error && <p className={styles.error}>{error}</p>}
     </div>

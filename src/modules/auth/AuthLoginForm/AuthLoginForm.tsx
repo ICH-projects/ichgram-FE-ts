@@ -46,12 +46,14 @@ export default function AuthLoginForm({ handleOnSubmit }: IAuthLoginFormProps) {
             register={register}
             {...fields.email}
             error={errors.email?.message}
+            ariaLabel={fields.email.name}
           />
           <TextField
             className={styles.input}
             register={register}
             {...fields.password}
             error={errors.password?.message}
+            ariaLabel={fields.password.name}
           />
           <Button
             type="submit"
