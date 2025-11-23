@@ -1,16 +1,17 @@
 {
   "usesTypeScript": false,
   "usesStyledComponents": true,
-  "testLibrary": "None",
+  "testLibrary": "Testing Library",
   "component": {
     "default": {
       "customTemplates": {
         "component": "./generate-react-cli/component/TemplateName.tsx",
-        "style": "./generate-react-cli/component/TemplateName.module.css"
+        "style": "./generate-react-cli/component/TemplateName.module.css",
+        "test": "./generate-react-cli/component/TemplateName.test.tsx"
       },
       "path": "src/shared/components",
       "withStyle": true,
-      "withTest": false,
+      "withTest": true,
       "withStory": false,
       "withLazy": false
     },
@@ -28,11 +29,12 @@
     "page": {
       "customTemplates": {
         "component": "./generate-react-cli/page/TemplateName.tsx",
-        "style": "./generate-react-cli/page/TemplateName.module.css"
+        "style": "./generate-react-cli/page/TemplateName.module.css",
+        "test": "./generate-react-cli/component/TemplateName.test.tsx"
       },
       "path": "src/pages",
       "withStyle": true,
-      "withTest": false,
+      "withTest": true,
       "withStory": false,
       "withLazy": false
     },
@@ -60,4 +62,3 @@
     }
   }
 }
-
