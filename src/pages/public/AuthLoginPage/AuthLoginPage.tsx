@@ -23,12 +23,12 @@ export default function AuthLoginPage() {
   console.log(error);
 
   return (
-    <div className={styles.authLoginPage}>
+    <div className={styles.authLoginPage} data-testId="loginPage">
       <div className={styles.gridWrapper}>
         <BannerPhone />
         <AuthLoginForm handleOnSubmit={handleOnSubmit} />
       </div>
-      <Info loading={loading} error={error} message={message} />
+      <Info loading={loading} error={error} message={message} dataTestId="info" />
     </div>
   );
 }

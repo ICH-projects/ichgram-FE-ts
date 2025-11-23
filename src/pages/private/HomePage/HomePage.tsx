@@ -29,7 +29,7 @@ export default function HomePage() {
   }, [dispatch]);
 
   return (
-    <div className={styles.homePage}>
+    <div className={styles.homePage} data-testId="homePage">
       <Info loading={loading} error={error} message={message} />
       {posts && posts.length > 0 && <Posts posts={posts} />}
       <End />

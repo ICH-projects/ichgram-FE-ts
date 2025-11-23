@@ -9,6 +9,7 @@ interface IInfoProps {
   message?: string | null;
   render?: boolean;
   timeout?: number;
+  dataTestId?: string;
 }
 
 export default function Info({
@@ -18,6 +19,7 @@ export default function Info({
   message = null,
   render = true,
   timeout = 5000,
+  dataTestId,
 }: IInfoProps) {
   const fullClassName = `${styles.main} ${className}`;
 
@@ -34,10 +36,10 @@ export default function Info({
   }, [message, render, timeout]);
 
   return (
-    <div className={fullClassName}>
+    <div className={fullClassName} data-testId={dataTestId}>
       {loading && <p className={styles.loading}>Loading...</p>}
       {Boolean(error) && <p className={styles.error}>Error: {error}</p>}
-      {localMessage && <p className={styles.info}>Info: {localMessage}</p> }
+      {localMessage && <p className={styles.info}>Info: {localMessage}</p>}
     </div>
   );
 }
