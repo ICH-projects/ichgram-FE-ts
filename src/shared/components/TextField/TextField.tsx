@@ -11,6 +11,7 @@ interface ITextFieldProps {
   name: string;
   error?: string | null | undefined;
   ariaLabel?: string;
+  dataTestId?: string;
 }
 
 export default function TextField({
@@ -21,6 +22,7 @@ export default function TextField({
   name,
   error,
   ariaLabel,
+  dataTestId,
   ...props
 }: ITextFieldProps): ReactNode {
   const fullClassName = `${styles.input} ${styles[variant]} ${className}`;
@@ -32,6 +34,7 @@ export default function TextField({
         {...props}
         className={fullClassName}
         aria-label={ariaLabel}
+        data-testId={dataTestId}
       />
       {showError && !!error && <p className={styles.error}>{error}</p>}
     </div>

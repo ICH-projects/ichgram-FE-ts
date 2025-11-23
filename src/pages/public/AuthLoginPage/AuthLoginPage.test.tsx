@@ -55,9 +55,9 @@ describe("AuthLoginPage", () => {
       },
     });
 
-    expect(screen.getByRole("textbox", { name: /email/i })).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/password/i)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /log in/i })).toBeInTheDocument();
+    expect(screen.getByTestId(/email/i)).toBeInTheDocument();
+    expect(screen.getByTestId(/password/i)).toBeInTheDocument();
+    expect(screen.getByTestId(/submit/i)).toBeInTheDocument();
   });
 
   test("displays validation error for invalid email input", async () => {
@@ -71,7 +71,7 @@ describe("AuthLoginPage", () => {
       },
     });
 
-    const emailInput = screen.getByRole("textbox", { name: /email/i });
+    const emailInput = screen.getByTestId(/email/i);
     await userEvent.type(emailInput, "wrong_email");
     expect(
       await screen.findByText("Please enter a valid email address.")
@@ -93,7 +93,7 @@ describe("AuthLoginPage", () => {
       },
     });
 
-    const passwordInput = screen.getByPlaceholderText(/password/i);
+    const passwordInput = screen.getByTestId(/password/i);
     await userEvent.type(passwordInput, "somepassword");
     expect(
       screen.queryByText("password is a required field")
@@ -113,9 +113,9 @@ describe("AuthLoginPage", () => {
       </Provider>
     );
 
-    const emailInput = screen.getByRole("textbox", { name: /email/i });
-    const passwordInput = screen.getByPlaceholderText(/password/i);
-    const submitButton = screen.getByRole("button", { name: /log in/i });
+    const emailInput = screen.getByTestId(/email/i);
+    const passwordInput = screen.getByTestId(/password/i);
+    const submitButton = screen.getByTestId(/submit/i);
 
     await userEvent.type(emailInput, "test@example.com");
     await userEvent.type(passwordInput, "password123");

@@ -47,6 +47,7 @@ export default function AuthLoginForm({ handleOnSubmit }: IAuthLoginFormProps) {
             {...fields.email}
             error={errors.email?.message}
             ariaLabel={fields.email.name}
+            dataTestId={fields.email.name}
           />
           <TextField
             className={styles.input}
@@ -54,12 +55,14 @@ export default function AuthLoginForm({ handleOnSubmit }: IAuthLoginFormProps) {
             {...fields.password}
             error={errors.password?.message}
             ariaLabel={fields.password.name}
+            dataTestId={fields.password.name}
           />
           <Button
             type="submit"
             variant="contained"
             className={styles.button}
             disabled={!isValid}
+            dataTestId="submit"
           >
             Log in
           </Button>

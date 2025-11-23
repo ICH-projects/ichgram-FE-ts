@@ -9,6 +9,7 @@ interface IButtonProps {
   type?: "button" | "submit" | "reset" | undefined;
   handleClick?: (...args: unknown[]) => void;
   disabled?: boolean;
+  dataTestId?: string;
 }
 
 export default function Button({
@@ -17,6 +18,7 @@ export default function Button({
   active = false,
   children,
   handleClick = () => {},
+  dataTestId,
   ...props
 }: IButtonProps) {
   const fullClassName = `${styles.button} ${styles[variant]} ${
@@ -24,7 +26,7 @@ export default function Button({
   } ${className}`;
 
   return (
-    <button className={fullClassName} onClick={handleClick} {...props}>
+    <button className={fullClassName} onClick={handleClick} data-testId={dataTestId} {...props}>
       {children}
     </button>
   );
